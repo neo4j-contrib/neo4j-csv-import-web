@@ -29,23 +29,23 @@ Unit tests are written using mocha.js and can be run with `npm test`.
 
 There are essentially two components to this project: a web application that provides a UI to allow the user select files for import and configure the data model and a small Javascript library that holds the logic for building Cypher import queries from the configuration object defined in the web application.
  
- ### Web application overview
+###Web application overview
  
  The main goal of the web application is to allow the user to select csv files for import, handle parsing of the csv files (this is currently done using the [PapaParse library](https://github.com/mholt/PapaParse), and guide the user through configuring the data model. The product of this process is two JavaScript objects: one of the content of the parsed files and one that defines the configured data model (how the parsed csv files are mapped to nodes and relationships). These two objects are passed to `CypherBuilder`, a small JavaScript library to create Cypher import scripts.
  
  Additionally, the web application includes functionality to connect to an existing Neo4j instance to execute the import queries or simply display the generated Cypher queries for the user.
  
- ### CypherBuilder.js
+###CypherBuilder.js
  
  This library provides a class `CypherBuilder` whose constructor takes two objects: `parsedFilesData` and `configData`. The library is designed such that it can be run in a node.js environment or in the client for an alternative architecture.
  
- #### `parsedFilesData`
+#### `parsedFilesData`
  
  This object contains data from the parsed csv files for import in the format returned by Papaparse. 
  
  * TODO: format / example from test
  
- #### `configData`
+g#### `configData`
  
  This object contains the user-defined configuration / mappings for data import.
   
