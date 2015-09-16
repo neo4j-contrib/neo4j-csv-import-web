@@ -45,7 +45,7 @@ There are essentially two components to this project: a web application that pro
  
  * TODO: format / example from test
  
-g#### `configData`
+#### `configData`
  
  This object contains the user-defined configuration / mappings for data import.
   
