@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-xs-6">
+        <h3>Relationships</h3>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>From</th>
+                    <th>Name</th>
+                    <th>To</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-xs-6">
+        <img src="http://placehold.it/350x400">
+    </div>
+</div>
+
+<div class="row">
+    <div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            {{#each files}}
+                <li role="presentation"><a href="#{{stripstr this}}" aria-controls="{{stripstr this}}" role="tab" data-toggle="tab">{{this}}</a></li>
+            {{/each}}
+
+
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            {{#each files}}
+                <div role="tabpanel" class="tab-pane" id="{{stripstr this}}">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Column</th>
+                                <th>Rename</th>
+                                <th>Include</th>
+                                <th>PK</th>
+                                <th>Datatype</th>
+                                <th>Create Index</th>
+                                <th>FK</th>
+                            </tr>
+                            <tr>
+                                <td>Name</td>
+                                <td><label><input type="text"></label></td>
+                                <td><label><input type="checkbox"></label></td>
+                                <td><label><input type="checkbox"></label></td>
+                                <td><label><select><option value="---">---</option></select></label></td>
+                                <td><label><input type="checkbox"></label></td>
+                                <td><button type="button" class="btn btn-sm">---</button></td>
+                            </tr>
+                                <!-- INSERT HELPER HERE TO BUILD TABLE -->
+                        </tbody>
+                    </table>
+                </div>
+            {{/each}}
+
+        </div>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 col-md-offset-9">
+        <a href="/import"><button type="button" class="btn btn-success">Next</button></a>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        // set first tab as active
+        $('.nav-tabs li').first().addClass("active");
+        $('.tab-pane').first().addClass("active");
+
+    });
+</script>

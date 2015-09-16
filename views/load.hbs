@@ -1,0 +1,53 @@
+<script>
+
+
+</script>
+
+<h1>File Uploaded</h1>
+
+<div id="file-tables">
+
+</div>
+
+<script>
+
+    var fileNames = JSON.parse(localStorage.getItem("csvFileNames"));
+
+    $.each(fileNames, function(i, file) {
+        $('#file-tables').append($("<h2>"));
+        $('#file-tables h2').text(file);
+
+        var key = "csvimportFile" + file;
+        console.log(key);
+        var fileData = JSON.parse(localStorage.getItem(key));
+
+        var fileTable = $("#file-tables").append($("<table/>"));
+        $("#file-tables table").addClass("table");
+        var tableBody = $("#file-tables table").append($("<tbody/>"));
+
+        var headerRow = $("<tr/>");
+        headerRow.append($("<th/>").text("Row"));
+        $.each(fileData.meta.fields, function(i, el) {
+            headerRow.append($("<th/>").text(el));
+        });
+
+        tableBody.append(headerRow);
+
+        $.each(fileData.data, function(i, el) {
+            var row = $("<tr/>");
+            row.append($("<td/>").text(i));
+            $.each(el, function(j, cell) {
+                //if (cell !== '')
+                row.append($("<td/>").text(cell));
+            });
+            tableBody.append(row);
+        })
+
+
+    });
+
+    //var csvFile = JSON.parse(localStorage.getItem("csvimportFile"));
+    //console.log(csvFile);
+
+
+</script>

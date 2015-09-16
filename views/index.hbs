@@ -1,0 +1,65 @@
+<script src="js/papaparse.min.js"></script>
+
+
+<h1>Select a file</h1>
+
+<input type="file" id="csv-file" name="files" multiple/>
+
+
+<script>
+    function handleFileSelect(evt) {
+        var file = evt.target.files[0];
+
+        $('#csv-file').parse({
+            config: {
+                header: true,
+                dynamicTyping: true,
+                preview: 10,
+                complete: function(results, file) {
+                    var data = results;
+                    console.log(data);
+                    var fileList = JSON.parse(localStorage.getItem("csvFileNames"));
+                    fileList.push(file.name);
+                    localStorage.setItem("csvFileNames", JSON.stringify(fileList));
+                    localStorage.setItem("csvimportFile" + file.name, JSON.stringify(data));
+                    console.log(file);
+                }
+            },
+            before: function(file, inputElem) {
+                console.log(file);
+            },
+            complete: function() {
+                console.log("done parsing all files");
+
+                var allFileData = {};
+                var fileNames = JSON.parse(localStorage.getItem("csvFileNames"));
+                allFileData['files'] = fileNames;
+
+                $.each(fileNames, function(i, fileName) {
+                    var key = "csvimportFile" + fileName;
+                    var fileData = JSON.parse(localStorage.getItem(key));
+                    allFileData[fileName] = fileData;
+
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    data: JSON.stringify(allFileData),
+                    contentType: 'application/json',
+                    url: '/load',
+                    success: function(data) {
+                        console.log('success');
+                    }
+                });
+
+                window.location.href = '/load2';
+                }
+        });
+    }
+
+    $(document).ready(function(){
+        var emptyArray = [];
+        localStorage.setItem("csvFileNames", JSON.stringify(emptyArray));
+        $("#csv-file").change(handleFileSelect);
+    })
+</script>

@@ -1,0 +1,40 @@
+<h1>Files pending import</h1>
+
+<div class="row">
+    <form action="/load2" method="post">
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Import</th>
+            <th>Node</th>
+            <th>Relationship</th>
+            <th>Don't Know</th>
+            <th>Headers</th>
+            <th>File name</th>
+            <th>Size</th>
+            <th>Rows</th>
+            <th>Preview</th>
+        </tr>
+
+        {{#each files}}
+        <tr>
+            <th><label><input type="checkbox" name="{{this}}importCheck" checked></label></th>
+            <th><label><input type="radio" name="{{this}}typeRadios" value="node" checked></label></th>
+            <th><label><input type="radio" name="{{this}}typeRadios" value="relationship"></label></th>
+            <th><label><input type="radio" name="{{this}}typeRadios" value="unknown"></label></th>
+            <th><label><input type="checkbox" name="{{this}}headersCheck" checked disabled></label></th>
+            <th>{{this}}</th>
+            <th>-</th>
+            <th>-</th>
+            <th><a href="/preview/{{this}}">Preview file</a></th>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+<div class="row">
+    <div class="col-md-3 col-md-offset-9">
+<button type="submit" class="btn btn-success">Next</button>
+    </div>
+    <form action="/load2" method="post">
+</div>
