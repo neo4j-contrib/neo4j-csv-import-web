@@ -49,4 +49,15 @@ There are essentially two components to this project: a web application that pro
  
  This object contains the user-defined configuration / mappings for data import.
   
-  * TODO: format / example from test
+* TODO: format / example from test
+
+## TODO
+
+- [ ] basic web UI
+- [ ] handle CSV parsing
+- [ ] define data model config mappings
+- [ ] create data model config from user guided web UI 
+- [ ] functionality to validate data model config
+- [ ] generate Cypher CREATE statements
+- [ ] generate Cypher LOAD CSV statements
+- [ ] connect to existing Neo4j instance
