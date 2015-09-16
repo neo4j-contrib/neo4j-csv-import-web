@@ -1,9 +1,57 @@
 <div class="row">
 
 
-    <div class="btn-group" role="group" aria-label="import-toggle">
-        <button type="button" class="btn btn-default" id="">Generate Cypher</button>
-        <button type="button" class="btn btn-default" id="">Connect to Neo4j</button>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#cypher" aria-controls="cypher" role="tab" data-toggle="tab">Generate Cypher</a></li>
+        <li role="presentation"><a href="#connect" aria-controls="connect" role="tab" data-toggle="tab">Connect to Existing Neo4j Instance</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="cypher">
+            <h2 class="text-left">Cypher <small>Run this Cypher in a Neo4j instance to import your data.</small></h2>
+            <p class="text-right"><a href="#download">Download</a> | <a href="#copy">Copy</a></p>
+            <textarea class="form-control" rows="10" disabled>LOAD CSV HERE...</textarea>
+        </div>
+
+        <div role="tabpanel" class="tab-pane" id="connect">
+            <h2 class="text-left">Connect to Neo4j <small>Import to an existing Neo4j instance</small></h2>
+
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="inputNeo4jURL" class="col-sm-2 control-label">Neo4j URL</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="inputNeo4jURL" placeholder="http://localhost:7474/db/data">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputNeo4jUser" class="col-sm-2 control-label">Neo4j Username</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="inputNeo4jUser" placeholder="neo4j">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputNeo4jPassword" class="col-sm-2 control-label">Neo4j Password</label>
+                    <div class="col-sm-6">
+                        <input type="password" class="form-control" id="inputNeo4jPassword" placeholder="Password">
+                    </div>
+                </div>
+
+
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default" id="importButton">Import</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="col-sm-6">
+                <textarea class="form-control" rows="10" disabled>Status...</textarea>
+            </div>
+        </div>
     </div>
 
 
@@ -11,7 +59,8 @@
 
 <script>
     $(function(){
-        // event handler to toggle divs for cypher / connect to Neo4j on/off
+        // event handler for import button
+        // ajax call to trigger connection to Neo4j and begin import
 
     });
 </script>
