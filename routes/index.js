@@ -139,6 +139,7 @@ router.post('/datamodel', function(req, res, next) {
   req.session.configData = configData;
   req.session.save();
   console.dir(configData);
+
   res.redirect('/import');
 
 });
@@ -167,9 +168,14 @@ router.post('/importNeo4jInstance', function(req, res, next) {
       password = req.body.neo4jPassword,
       neo4jURL = req.body.neo4jURL;
 
-  console.log(req.body);
-  var db = new neo4j.GraphDatabase('http://' + username + ':' + password + '@localhost:7474'); // FIXME: use URL parameter
-  console.log(db);
+  var db = new neo4j.GraphDatabase({
+    "url": neo4jURL,
+    "auth": {
+      "username": username,
+      "password": password
+    }
+  });
+
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
 
   var cypher = cypherBuilder.buildCypher();
