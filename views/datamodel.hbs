@@ -15,8 +15,9 @@
         <img src="http://placehold.it/350x400">
     </div>
 </div>
+<form action="/datamodel" method="post">
+<!--<div class="row"> -->
 
-<div class="row">
     <div>
 
         <!-- Nav tabs -->
@@ -32,6 +33,27 @@
         <div class="tab-content">
             {{#each files}}
                 <div role="tabpanel" class="tab-pane" id="{{stripstr this}}">
+
+                    <div class="row">
+                    <div class="btn-group" role="group" aria-label="nodeRelSelect" style="padding:20px;">
+                        <button type="button" class="btn btn-default active">Node</button>
+                        <button type="button" class="btn btn-default" disabled>Relationship</button>
+                    </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                    <div class="form-group">
+
+                        <label for="{{this}}LabelInput" class="col-sm-2 control-label">Label</label>
+                        <div class="col-sm-10" style="padding:20px;">
+                            <input type="text" class="form-control" name="{{this}}LabelInput" id="{{this}}LabelInput" placeholder="Node">
+                        </div>
+                    </div>
+                        </div>
+
+                    </div>
+
+
                     <table class="table">
                         <tbody>
                             <tr>
@@ -43,16 +65,7 @@
                                 <th>Create Index</th>
                                 <th>FK</th>
                             </tr>
-                            <tr>
-                                <td>Name</td>
-                                <td><label><input type="text"></label></td>
-                                <td><label><input type="checkbox"></label></td>
-                                <td><label><input type="checkbox"></label></td>
-                                <td><label><select><option value="---">---</option></select></label></td>
-                                <td><label><input type="checkbox"></label></td>
-                                <td><button type="button" class="btn btn-sm">---</button></td>
-                            </tr>
-                                <!-- INSERT HELPER HERE TO BUILD TABLE -->
+                            {{datamodelTable this ../this ../this.config}}
                         </tbody>
                     </table>
                 </div>
@@ -61,13 +74,15 @@
         </div>
 
     </div>
-</div>
+<!-- </div> -->
 
 <div class="row">
     <div class="col-md-3 col-md-offset-9">
-        <a href="/import"><button type="button" class="btn btn-success">Next</button></a>
+        <button type="submit" class="btn btn-success">Next</button>
     </div>
+
 </div>
+    </form>
 
 <script>
     $(function() {

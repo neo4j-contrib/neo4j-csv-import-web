@@ -1,6 +1,8 @@
 var express = require('express'),
     router = express.Router(),
-    _ = require('lodash');
+    _ = require('lodash'),
+    neo4j = require('neo4j'),
+    CypherBuilder = require('../lib/buildCypher');
 
 // TODO: move route logic out into individual modules
 // TODO: rename routes to something more meaningful
@@ -71,8 +73,106 @@ router.get('/datamodel', function(req, res, next) {
   res.render('datamodel', context);
 });
 
+router.post('/datamodel', function(req, res, next) {
+  var formData = req.body,
+      configData = req.session.configData,
+      fileData = req.session.fileData,
+      nodesConfig = [];
+
+
+  console.dir(formData);
+  console.dir(configData);
+  console.dir(fileData);
+
+  var labelsArray = ["Node"]; // FIXME: temporary placeholder for labels
+
+  _.forEach(fileData.files, function(filename) {
+    var nodeConfig = _.filter(configData.nodes, {'filename': filename})[0];
+    console.dir(nodeConfig);
+    // create labels array, add labels: ["NODE"]
+    // get all fields for this filename
+    // for each field
+    // if field is included
+    // create obj
+    // headerKey, neoKey, dataType, index, primaryKey, foreignKey
+    // append to properties array
+    // properties: [{headerKey, neoKey, dataType, index, primaryKey, foreignKey}]
+
+    var fields = fileData[filename]['meta']['fields'],
+        properties = [];
+
+    // TODO: filter on only included fields
+    _.forEach(fields, function(field, i) {
+      var propertyObj = {};
+      propertyObj['headerKey'] = field;
+      propertyObj['neoKey'] = field; // FIXME: get renamed field
+      propertyObj['dataType'] = 'string'; // FIXME: get data type
+      propertyObj['index'] = false;   // FIXME: get create index?
+      if (i === 0){
+        propertyObj['primaryKey'] = true; // FIXME: we need at least one primary key
+      } else {
+        propertyObj['primaryKey'] = false;
+      }
+      propertyObj['foreignKey'] = false; // FIXME: not implemented
+
+      properties.push(propertyObj);
+
+    });
+
+    nodeConfig['labels'] = labelsArray;
+    nodeConfig['properties'] = properties;
+    nodesConfig.push(nodeConfig);
+
+
+  });
+  configData.nodes = nodesConfig;
+  req.session.configData = configData;
+  req.session.save();
+  console.dir(configData);
+  res.redirect('/import');
+
+});
+
 router.get('/import', function(req, res, next) {
-  res.render('import', {title: 'Import'});
+  var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
+  var cypher = cypherBuilder.buildCypher();
+  //var cypher = cypherBuilder.getTestCypher();
+
+  // get filedata and config data from session
+  // instantiate CypherBuilder instance and generate cypher
+  // pass cypher in the context object
+  // populate textarea with cypher in template
+  // add js event handler to call ajax method to connect / run against Neo4j instance
+  res.render('import', {cypher: cypher});
+});
+
+router.post('/importNeo4jInstance', function(req, res, next) {
+  // get connection vars from req.body
+  // connect to Neo4j instance
+  // get filedata and config data from session
+  // instaantiate cypherBuilder instance and generate cypher
+  // execute query against neo4j
+  // return results
+  var username = req.body.neo4jUser,
+      password = req.body.neo4jPassword,
+      neo4jURL = req.body.neo4jURL;
+
+  console.log(req.body);
+  var db = new neo4j.GraphDatabase('http://' + username + ':' + password + '@localhost:7474'); // FIXME: use URL parameter
+  console.log(db);
+  var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
+
+  var cypher = cypherBuilder.buildCypher();
+  //var cypher = cypherBuilder.getTestCypher(); // FIXME: don't use test cypher
+  console.log(cypher);
+  db.cypher({query: cypher}, function(err, results) {
+    console.log(results);
+    if (err) {
+      throw err;
+    }
+    console.log(results);
+
+  });
 });
 
 

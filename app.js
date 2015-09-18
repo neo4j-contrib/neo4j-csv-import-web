@@ -25,11 +25,14 @@ function guid() {
 
 // FIXME: move hbs helpers to separate module
 // Handlebars helpers
+
+// strip
 hbs.registerHelper("stripstr", function(str) {
   // FIXME: probably need a bit more logic here
   return str.split('.').join("");
 });
 
+// build HTML for /preview/:filename
 hbs.registerHelper("previewTable", function(fields, data) {
   var rows = "";
 
@@ -52,6 +55,28 @@ hbs.registerHelper("previewTable", function(fields, data) {
 
   return new hbs.SafeString(rows);
   // append rows
+});
+
+hbs.registerHelper("datamodelTable", function(filename, fileData, configData) {
+
+    var rows = "";
+
+
+    _.forEach(fileData[filename]['meta']['fields'], function(field) {
+        var row = '<tr>';
+        row += '<td>' + field + '</td>';
+        row += '<td><label><input type="text" name="' + filename + '-' + field + '-rename"></label></td>';
+        row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-include"></label></td>';
+        row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-pk"></label></td>';
+        row += '<td><label><select><option value="---">---</option></select></label></td>';
+        row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-index"></label></td>';
+        row += '<td><button type="button" class="btn btn-sm">---</button></td>';
+        row += '</tr>';
+        rows += row;
+    });
+
+    return new hbs.SafeString(rows);
+
 });
 
 var app = express();
