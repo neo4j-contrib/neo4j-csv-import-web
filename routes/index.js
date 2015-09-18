@@ -101,25 +101,35 @@ router.post('/datamodel', function(req, res, next) {
     var fields = fileData[filename]['meta']['fields'],
         properties = [];
 
-    // TODO: filter on only included fields
-    _.forEach(fields, function(field, i) {
-      var propertyObj = {};
-      propertyObj['headerKey'] = field;
-      propertyObj['neoKey'] = field; // FIXME: get renamed field
-      propertyObj['dataType'] = 'string'; // FIXME: get data type
-      propertyObj['index'] = false;   // FIXME: get create index?
-      if (i === 0){
-        propertyObj['primaryKey'] = true; // FIXME: we need at least one primary key
-      } else {
-        propertyObj['primaryKey'] = false;
-      }
-      propertyObj['foreignKey'] = false; // FIXME: not implemented
 
-      properties.push(propertyObj);
+    _.forEach(fields, function(field, i) {
+      if (formData[filename+'-'+field+'-include'] === 'on') {
+        var propertyObj = {};
+        propertyObj['headerKey'] = field;
+        propertyObj['neoKey'] = formData[filename + '-' + field + '-rename'] || field;
+
+        propertyObj['dataType'] = 'string'; // FIXME: get data type
+        if (formData[filename + '-' + field + '-index'] === 'on') {
+          propertyObj['index'] = true;
+        } else {
+          propertyObj['index'] = false;
+        }
+
+        if (formData[filename + '-' + field + '-pk'] === "on") {
+          propertyObj['primaryKey'] = true;
+        } else {
+          propertyObj['primaryKey'] = false;
+        }
+
+        propertyObj['foreignKey'] = false; // FIXME: not implemented
+
+        properties.push(propertyObj);
+      }
 
     });
 
-    nodeConfig['labels'] = labelsArray;
+    var strippedFilename = filename.split('.').join(""); // FIXME: better consistency with naming here
+    nodeConfig['labels'] = [formData[strippedFilename+'LabelInput']];
     nodeConfig['properties'] = properties;
     nodesConfig.push(nodeConfig);
 
