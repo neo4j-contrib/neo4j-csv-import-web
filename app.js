@@ -8,7 +8,9 @@ var express = require('express'),
     hbs = require('hbs'),
     _ = require("lodash"),
     routes = require('./routes/index'),
-    CypherBuilder = require('./lib/buildCypher');
+    CypherBuilder = require('./lib/buildCypher'),
+    expressValidator = require('express-validator');
+
 
 
 // FIXME: move to helpers lib
@@ -67,7 +69,7 @@ hbs.registerHelper("datamodelTable", function(filename, fileData, configData) {
         row += '<td>' + field + '</td>';
         row += '<td><label><input type="text" name="' + filename + '-' + field + '-rename"></label></td>';
         row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-include"></label></td>';
-        row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-pk"></label></td>';
+        row += '<td><label><input type="checkbox" class="pkcheckbox" name="' + filename + '-' + field + '-pk"></label></td>';
         row += '<td><label><select><option value="---">---</option></select></label></td>';
         row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-index"></label></td>';
         row += '<td><button type="button" class="btn btn-sm">---</button></td>';
@@ -77,6 +79,10 @@ hbs.registerHelper("datamodelTable", function(filename, fileData, configData) {
 
     return new hbs.SafeString(rows);
 
+});
+
+hbs.registerHelper("stringify", function(json) {
+    return JSON.stringify(json);
 });
 
 var app = express();
