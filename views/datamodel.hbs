@@ -75,7 +75,7 @@
                             <tr>
                                 <th>Column</th>
                                 <th>Rename</th>
-                                <th>Include</th>
+                                <th>Skip</th>
                                 <th>PK</th>
                                 <th>Datatype</th>
                                 <th>Create Index</th>
@@ -140,6 +140,13 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="filenameInput" class="col-sm-2 control-label">Filename</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="filenameInput" placeholder="legislators.csv">
+                        </div>
+                    </div>
+
                 </form>
 
             <!-- Modal Footer -->
@@ -160,6 +167,7 @@
 
 <script>
     var configData = JSON.parse('{{{stringify this.config}}}');
+    console.log(configData);
     var network; // network viz
     // TODO: update config data as form is updated
     // benefits of this:
@@ -292,17 +300,13 @@
             drawNetworkViz();
         }
 
-        function handleCreateRelationship(e) {
-
-        }
-
         function drawRelationshipTable(){
             var relTableBody = $('#relTableBody');
             _.forEach(configData.relationships, function(rel, i) {
                 var row = "<tr>";
-                row += "<td>" + rel.from.label + ":" + rel.from.neokey + "</td>";
+                row += "<td>" + rel.from.label + ":" + rel.from.neoKey + "</td>";
                 row += "<td>" + rel.name + "</td>";
-                row += "<td>" + rel.to.label + ":" + rel.to.neokey + "</td>";
+                row += "<td>" + rel.to.label + ":" + rel.to.neoKey + "</td>";
                 relTableBody.append(row);
 
             })
@@ -310,34 +314,44 @@
 
         // TODO: build config objects here as form is manipulated instead of passing formdata to server
 
+
+        // UI handlers
         $('.labelInput').change(function(e){handleUpdateLabel(e)});
+
         $('#createRelButton').click(function() {
             var from = $('#fromInput').val();
             var to = $('#toInput').val();
             var relName = $('#nameInput').val();
+            var filename = $('#filenameInput').val();
 
             // FIXME: this will be replaced when moving to drop downs in modal
             var fromArr = from.split(":");
             var toArr = to.split(":");
             var fromLabel = fromArr[0];
             var fromKey = fromArr[1];
+            var fromFileKey = fromArr[2];
+
             var toArr = to.split(":");
             var toLabel = toArr[0];
             var toKey = toArr[1];
+            var toFileKey = toArr[2];
 
 
 
-            var newRel = {};
+            var newRel = _.find(configData.relationships, {filename: filename});
             newRel['name'] = relName;
+            newRel['filename'] = filename;
             var fromObj = {};
             fromObj['label'] = fromLabel;
-            fromObj['neokey'] = fromKey;
+            fromObj['neoKey'] = fromKey;
+            fromObj['fileKey'] = fromFileKey;
             var toObj = {};
             toObj['label'] = toLabel;
-            toObj['neokey'] = toKey;
+            toObj['neoKey'] = toKey;
+            toObj['fileKey'] = toFileKey;
 
             newRel['from'] = fromObj;
-            newRel['to'] = toObj
+            newRel['to'] = toObj;
 
             // TODO: get relationship filename
             // TODO: get from filename
@@ -346,7 +360,7 @@
             // TODO: get to filekey
 
 
-            configData.relationships.push(newRel);
+            //configData.relationships.push(newRel);
 
             console.log(configData);
 
@@ -354,6 +368,99 @@
             updateNetworkViz();
 
         });
+
+
+        // need way of going from an event / input target to the node object
+        // filename / property
+        // TODO: rename handler
+        $('.renameLabel').change(function(e){
+           // get node from config
+            // set neoKey
+            var filename = $(e.target).data("filename");
+            var field = $(e.target).data("field");
+
+            var node = _.find(configData.nodes, {filename: filename});
+            var property = _.find(node.properties, {headerKey: field});
+
+            property['neoKey'] = $(e.target).val();
+
+            console.log(configData);
+        });
+
+        // TODO: include checkbox handler
+
+        $('.skipCheckBox').change(function(e){
+            var filename = $(e.target).data("filename");
+            var field = $(e.target).data("field");
+
+            var node = _.find(configData.nodes, {filename: filename});
+            var property = _.find(node.properties, {headerKey: field});
+
+            if ($(e.target).is(':checked')) {
+                property['skip'] = true;
+            } else {
+                property['skip'] = false;
+            }
+
+            console.log(configData);
+
+        });
+        // TODO: PK checkbox handler
+        $('.pkcheckbox').change(function(e){
+            var filename = $(e.target).data("filename");
+            var field = $(e.target).data("field");
+
+            var node = _.find(configData.nodes, {filename: filename});
+            var property = _.find(node.properties, {headerKey: field});
+
+            if ($(e.target).is(':checked')) {
+                property['primaryKey'] = true;
+            } else {
+                property['primaryKey'] = false;
+            }
+
+            // TODO: toggle index for this property automatically
+            console.log(configData);
+
+        });
+
+
+        // TODO: Datatype dropdown handler
+        // TODO: Create index handler
+        $('.indexcheckbox').change(function(e){
+            var filename = $(e.target).data("filename");
+            var field = $(e.target).data("field");
+
+            var node = _.find(configData.nodes, {filename: filename});
+            var property = _.find(node.properties, {headerKey: field});
+
+            if ($(e.target).is(':checked')) {
+                property['index'] = true;
+            } else {
+                property['index'] = false;
+            }
+
+            console.log(configData);
+
+        });
+
+        // TODO: FK handler
+
+        $('#submit').click(function(e){
+            e.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                data: JSON.stringify(configData),
+                contentType: 'application/json',
+                url: '/datamodel',
+                success: function(data) {
+                    window.location.href = '/import';
+                }
+            })
+        });
+
+
         drawNetworkViz();
     });
 </script>

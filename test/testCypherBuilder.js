@@ -172,14 +172,14 @@ var legislatorCommitteesConfigData = {
             "filename": "committee-members.csv",
             "from": {
                 "filename": "legislators.csv",
-                "neokey": "thomasID",
-                "filekey": "legislatorID",
+                "neoKey": "thomasID",
+                "fileKey": "legislatorID",
                 "label": "Legislator"
             },
             "to": {
                 "filename": "committees.csv",
-                "neokey": "thomasID",
-                "filekey": "committeeID",
+                "neoKey": "thomasID",
+                "fileKey": "committeeID",
                 "label": "Committee"
             },
             "name": "SERVES_ON"

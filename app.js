@@ -66,12 +66,12 @@ hbs.registerHelper("datamodelTable", function(filename, fileData, configData) {
 
     _.forEach(fileData[filename]['meta']['fields'], function(field) {
         var row = '<tr>';
-        row += '<td>' + field + '</td>';
-        row += '<td><label><input type="text" name="' + filename + '-' + field + '-rename"></label></td>';
-        row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-include"></label></td>';
-        row += '<td><label><input type="checkbox" class="pkcheckbox" name="' + filename + '-' + field + '-pk"></label></td>';
-        row += '<td><label><select><option value="---">---</option></select></label></td>';
-        row += '<td><label><input type="checkbox" name="' + filename + '-' + field + '-index"></label></td>';
+        row += '<td>' + field + '</td>'; // static
+        row += '<td><label><input class="renameLabel" data-filename="' + filename + '" data-field="' + field + '" type="text" name="' + filename + '-' + field + '-rename"></label></td>'; // rename
+        row += '<td><label><input class="skipCheckBox" data-filename="' + filename + '" data-field="' + field + '"type="checkbox" name="' + filename + '-' + field + '-skip"></label></td>'; // skip
+        row += '<td><label><input type="checkbox" data-filename="' + filename + '" data-field="' + field + '" class="pkcheckbox" name="' + filename + '-' + field + '-pk"></label></td>'; // PK
+        row += '<td><label><select><option value="---">---</option></select></label></td>'; // datatype
+        row += '<td><label><input class="indexCheckbox" type="checkbox" data-filename="' + filename + '" data-field"' + field + '" name="' + filename + '-' + field + '-index"></label></td>'; // create index
         row += '<td><button type="button" class="btn btn-sm">---</button></td>';
         row += '</tr>';
         rows += row;
