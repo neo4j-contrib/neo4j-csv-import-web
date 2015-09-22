@@ -46,7 +46,8 @@ hbs.registerHelper("previewTable", function(fields, data) {
   row += "</tr>";
   rows += row;
 
-  _.forEach(data, function(obj) {
+  _.forEach(data, function(obj, i) {
+      if (i >= 10) return false; // only show 10 rows in preview
     row = "<tr>";
     _.forEach(fields, function(field) {
       row += "<td>" + obj[field] + "</td>";
