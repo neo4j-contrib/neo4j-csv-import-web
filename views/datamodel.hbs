@@ -52,10 +52,11 @@
 
                     <div class="row">
                     <div class="btn-group" role="group" aria-label="nodeRelSelect" style="padding:20px;">
-                        <button type="button" class="btn btn-default active">Node</button>
-                        <button type="button" class="btn btn-default" disabled>Relationship</button>
+                        <button id="{{stripstr this}}-node-button" type="button" class="btn btn-default active">Node</button>
+                        <button id="{{stripstr this}}-rel-button" type="button" class="btn btn-default" disabled>Relationship</button>
                     </div>
                         </div>
+                    <div id="{{stripstr this}}-datamodel-pane">
                     <div class="row">
                         <div class="col-sm-6">
                     <div class="form-group">
@@ -84,6 +85,8 @@
                             {{datamodelTable this ../this ../this.config}}
                         </tbody>
                     </table>
+                    </div>
+                    <h3 id="{{stripstr this}}-rel-message" style="display:none;">Please configure this relationship using "Create New" relationship button above.</h3>
                 </div>
             {{/each}}
 
@@ -169,6 +172,21 @@
     var configData = JSON.parse('{{{stringify this.config}}}');
     console.log(configData);
     var network; // network viz
+
+    // iterate through all relationships and hide the filename-node-pane element for that file
+    // toggle the node button off
+    // toggle the relationship button on
+
+    _.forEach(configData.relationships, function(relObject) {
+       var filename = relObject.filename.split(".").join("");
+        console.log(filename);
+        $('#'+filename +'-datamodel-pane').hide();
+        $('#'+filename + '-node-button').prop('disabled', true).removeClass("active");
+        $('#'+filename + '-rel-button').prop('disabled', false).addClass("active");
+        $('#'+filename + '-rel-message').show();
+
+    });
+
     // TODO: update config data as form is updated
     // benefits of this:
     //  - can update visual with standard data format
