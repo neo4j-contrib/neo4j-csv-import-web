@@ -35,7 +35,8 @@ var nodeConfig = {
             "dataType": "int",
             "index": true,
             "primaryKey": true,
-            "foreignKey": false
+            "foreignKey": false,
+            "skip": false
         },
         {
             "headerKey": "firstName",
@@ -43,7 +44,8 @@ var nodeConfig = {
             "dataType": "string",
             "index": false,
             "primaryKey": false,
-            "foreignKey": false
+            "foreignKey": false,
+            "skip": false
         },
         {
             "headerKey": "lastName",
@@ -51,7 +53,8 @@ var nodeConfig = {
             "dataType": "string",
             "index": false,
             "primaryKey": false,
-            "foreignKey": false
+            "foreignKey": false,
+            "skip": false
         },
         {
             "headerKey": "type",
@@ -59,14 +62,16 @@ var nodeConfig = {
             "dataType": "string",
             "index": false,
             "primaryKey": false,
-            "foreignKey": false
+            "foreignKey": false,
+            "skip": false
         },
         {
             "headerKey": "party",
             "neoKey": "party",
             "dataType": "string",
             "primaryKey": false,
-            "foreignKey": false
+            "foreignKey": false,
+            "skip": false
         }
     ]
 };
@@ -85,7 +90,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "int",          // ls datatypes
                     "index": true,
                     "primaryKey": true,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "firstName",
@@ -93,7 +99,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": false,
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "lastName",
@@ -101,7 +108,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": false,
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "type",
@@ -109,14 +117,16 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": false,
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "party",
                     "neoKey": "party",
                     "dataType": "string",
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 }
             ]
         },
@@ -130,7 +140,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": true,
                     "primaryKey": true,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "jurisdiction",
@@ -138,7 +149,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": false,
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "name",
@@ -146,7 +158,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": false,
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "type",
@@ -154,7 +167,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": false,
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 },
                 {
                     "headerKey": "url",
@@ -162,7 +176,8 @@ var legislatorCommitteesConfigData = {
                     "dataType": "string",
                     "index": false,
                     "primaryKey": false,
-                    "foreignKey": false
+                    "foreignKey": false,
+                    "skip": false
                 }
             ]
         }
@@ -460,3 +475,11 @@ describe('buildNode', function() {
 });
 
 
+describe('buildCSV', function() {
+    describe("#buildCSVCypher", function() {
+        it('generate LOAD CSV statements', function() {
+            var legislatorBuilder = new CypherBuilder(legislatorCommitteesFilesData, legislatorCommitteesConfigData);
+            assert.equal(loadLegislatorsCypher, legislatorBuilder.buildCSVCypher());
+        })
+    })
+})
