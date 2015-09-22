@@ -253,13 +253,25 @@
                 nodesArr.push({id: i, label: name});
             });
 
-            // TODO: construct relationships
+            // FIXME: duplicated code
+            var edges = [];
+            $.each(configData.relationships, function(i, el) {
+                if (el.to && el.from) {
+                    console.log(el);
+                    var from = _.findIndex(configData.nodes, {labels: [el.from.label]});
+                    var to = _.findIndex(configData.nodes, {labels: [el.to.label]});
+
+                    var edge = {from: from, arrows: "to", to: to, label: el.name};
+                    edges.push(edge);
+                }
+
+            });
 
             var container = document.getElementById('networkViz');
             var data = {
                 nodes: new vis.DataSet(nodesArr),
                 config: {},
-                edges: new vis.DataSet([])
+                edges: new vis.DataSet(edges)
             };
             var options = {};
 
@@ -281,16 +293,18 @@
                 nodesArr.push({id: i, label: name});
             });
 
-            // TODO: construct relationships
-
             var edges = [];
             $.each(configData.relationships, function(i, el) {
-                console.log(el);
-                var from = _.findIndex(configData.nodes, {labels: [el.from.label]});
-                var to = _.findIndex(configData.nodes, {labels: [el.to.label]});
 
-                var edge = {from: from, arrows: "to", to: to, label: el.name};
-                edges.push(edge);
+                if (el.from && el.to) {
+
+                    console.log(el);
+                    var from = _.findIndex(configData.nodes, {labels: [el.from.label]});
+                    var to = _.findIndex(configData.nodes, {labels: [el.to.label]});
+
+                    var edge = {from: from, arrows: "to", to: to, label: el.name};
+                    edges.push(edge);
+                }
 
             });
 
@@ -321,11 +335,13 @@
         function drawRelationshipTable(){
             var relTableBody = $('#relTableBody');
             _.forEach(configData.relationships, function(rel, i) {
-                var row = "<tr>";
-                row += "<td>" + rel.from.label + ":" + rel.from.neoKey + "</td>";
-                row += "<td>" + rel.name + "</td>";
-                row += "<td>" + rel.to.label + ":" + rel.to.neoKey + "</td>";
-                relTableBody.append(row);
+                if (rel.from && rel.to) {
+                    var row = "<tr>";
+                    row += "<td>" + rel.from.label + ":" + rel.from.neoKey + "</td>";
+                    row += "<td>" + rel.name + "</td>";
+                    row += "<td>" + rel.to.label + ":" + rel.to.neoKey + "</td>";
+                    relTableBody.append(row);
+                }
 
             })
         }
@@ -355,8 +371,14 @@
             var toFileKey = toArr[2];
 
 
-
+            var createdNewRelationship = false;
             var newRel = _.find(configData.relationships, {filename: filename});
+
+            if (!newRel) {
+                newRel = {};
+                createdNewRelationship = true;
+            }
+
             newRel['name'] = relName;
             newRel['filename'] = filename;
             var fromObj = {};
@@ -378,7 +400,9 @@
             // TODO: get to filekey
 
 
-            //configData.relationships.push(newRel);
+            if (createdNewRelationship) {
+                configData.relationships.push(newRel);
+            }
 
             console.log(configData);
 
@@ -480,5 +504,6 @@
 
 
         drawNetworkViz();
+        drawRelationshipTable();  // FIXME: only skeleton of relationship object at load. dont' add row if missing properties
     });
 </script>

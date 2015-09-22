@@ -2,7 +2,12 @@ var express = require('express'),
     router = express.Router(),
     _ = require('lodash'),
     neo4j = require('neo4j'),
-    CypherBuilder = require('../lib/buildCypher');
+    CypherBuilder = require('../lib/buildCypher'),
+    babyparse = require("babyparse");
+
+// hold all data in memory to be served up for LOAD CSV
+// FIXME: find a better way to persist this data
+var allFiles = {};
 
 // TODO: move route logic out into individual modules
 // TODO: rename routes to something more meaningful
@@ -50,6 +55,8 @@ function parseLoadData(formData, fileData) {
         properties['headerKey'] = field;
         properties['neoKey'] = field;
         properties['dataType'] = 'string';
+        properties['primaryKey'] = false;
+        properties['skip'] = false;
 
         node['properties'].push(properties);
       });
@@ -158,9 +165,20 @@ router.post('/datamodel', function(req, res, next) {
 
 });
 
+router.get('/files/:filename', function(req, res, next) {
+  var filename = req.params.filename;
+
+  var data = allFiles[filename]['data'];
+  //var data = req.session.fileData[filename]['data'];
+
+  res.set('Content-Type', 'application/csv');
+  res.send(babyparse.unparse(data));
+});
+
 router.get('/import', function(req, res, next) {
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
   var cypher = cypherBuilder.buildCypher();
+  var csvCypher = cypherBuilder.buildCSVCypher();
   //var cypher = cypherBuilder.getTestCypher();
 
   // get filedata and config data from session
@@ -168,7 +186,7 @@ router.get('/import', function(req, res, next) {
   // pass cypher in the context object
   // populate textarea with cypher in template
   // add js event handler to call ajax method to connect / run against Neo4j instance
-  res.render('import', {cypher: cypher});
+  res.render('import', {cypher: cypher, loadCSVCypher: csvCypher});
 });
 
 router.post('/importNeo4jInstance', function(req, res, next) {
@@ -192,17 +210,30 @@ router.post('/importNeo4jInstance', function(req, res, next) {
 
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
 
-  var cypher = cypherBuilder.buildCypher();
+  var statements = cypherBuilder.buildCSVCypher().split(";");
   //var cypher = cypherBuilder.getTestCypher(); // FIXME: don't use test cypher
-  console.log(cypher);
-  db.cypher({query: cypher}, function(err, results) {
+  //console.log(cypher);
+
+  var queryObjs = [];
+
+  _.forEach(statements, function(cypher) {
+    console.log(cypher);
+    var obj = {};
+    obj['query'] = cypher;
+    queryObjs.push(obj);
+  });
+
+  db.cypher({queries: queryObjs}, function(err, results) {
     console.log(results);
     if (err) {
-      throw err;
+      console.log(err);
+      //throw err;
+      next(err);
     }
     console.log(results);
 
   });
+
 });
 
 
@@ -213,6 +244,7 @@ router.get('/load', function(req, res, next) {
 router.post('/load', function(req, res, next) {
   req.session.fileData = req.body;
   req.session.save();
+  allFiles = req.body;
   //console.log(req.session.fileData);
 
 });
