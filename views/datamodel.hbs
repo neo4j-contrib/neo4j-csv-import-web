@@ -22,7 +22,7 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newRelModal">Create New</button></td>
+                <td><button class="btn btn-primary btn-sm" id="modalToggleButton">Create New</button></td>
             </tr>
             </tfoot>
         </table>
@@ -49,7 +49,7 @@
         <div class="tab-content">
             {{#each files}}
                 <div role="tabpanel" class="tab-pane" data-filename="{{this}}" id="{{stripstr this}}">
-
+                    <div class="{{stripstr this}}-nodePaneDiv">
                     <div class="row">
                     <div class="btn-group" role="group" aria-label="nodeRelSelect" style="padding:20px;">
                         <button id="{{stripstr this}}-node-button" type="button" class="btn btn-default active">Node</button>
@@ -85,6 +85,7 @@
                             {{datamodelTable this ../this ../this.config}}
                         </tbody>
                     </table>
+                    </div>
                     </div>
                     <h3 id="{{stripstr this}}-rel-message" style="display:none;">Please configure this relationship using "Create New" relationship button above.</h3>
                 </div>
@@ -123,25 +124,61 @@
             <!-- Modal Body -->
             <div class="modal-body">
 
+
+
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label for="fromInput" class="col-sm-2 control-label">From</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="fromInput" placeholder="Legislator:thomasID">
+                        <!-- FROM -->
+                        <label for="fromLabelSelect" class="col-sm-4 control-label">From - Label</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="fromLabelSelect"><option value="---">Label</option></select>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="fromNeoKeySelect" class="col-sm-4 control-label">From - neoKey</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="fromNeoKeySelect" disabled><option value="---">Label</option></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fromHeaderKeySelect" class="col-sm-4 control-label">From - headerKey</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="fromHeaderKeySelect" disabled><option value="---">Label</option></select>
+                        </div>
+                    </div>
+
+                    <!-- TO -->
+                    <div class="form-group">
+                        <label for="toLabelSelect" class="col-sm-4 control-label">To - label</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="toLabelSelect"><option value="---">Label</option></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="toNeoKeySelect" class="col-sm-4 control-label">To - neoKey</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="toNeoKeySelect" disabled><option value="---">Label</option></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="toHeaderKeySelect" class="col-sm-4 control-label">To - headerKey</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="toHeaderKeySelect" disabled><option value="---">Label</option></select>
+                        </div>
+                    </div>
+
+
                     <div class="form-group">
                         <label for="nameInput" class="col-sm-2 control-label">Relationship name</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="nameInput" placeholder="SERVES_ON">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="toInput" class="col-sm-2 control-label">To</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="toInput" placeholder="Committee:committeeID">
-                        </div>
-                    </div>
+
 
                     <div class="form-group">
                         <label for="filenameInput" class="col-sm-2 control-label">Filename</label>
@@ -180,9 +217,10 @@
     _.forEach(configData.relationships, function(relObject) {
        var filename = relObject.filename.split(".").join("");
         console.log(filename);
-        $('#'+filename +'-datamodel-pane').hide();
+        $('#'+filename +'-datamodel-pane').remove();
         $('#'+filename + '-node-button').prop('disabled', true).removeClass("active");
         $('#'+filename + '-rel-button').prop('disabled', false).addClass("active");
+        //$('#'+filename + '-nodePaneDiv').empty();
         $('#'+filename + '-rel-message').show();
 
     });
@@ -207,38 +245,7 @@
 
         //})
 
-        $('#createRelButton').click(function(e) {
-            // pass nodes and relationships objects from server
-            // get parameters from relationship form
-            // update relationships object
-            // create data for vis.js
-            // update vis.js rendering
 
-
-
-
-        });
-
-        // create an array with nodes
-        //var nodes = new vis.DataSet([
-        //    {id: 1, label: 'Node 1'},
-        //    {id: 2, label: 'Node 2'},
-        //    {id: 3, label: 'Node 3'},
-        //    {id: 4, label: 'Node 4'},
-        //    {id: 5, label: 'Node 5'}
-        //]);
-
-        // create an array with edges
-        //var edges = new vis.DataSet([
-        //    {from: 1, to: 3},
-        //    {from: 1, to: 2},
-        //    {from: 2, to: 4},
-        //    {from: 2, to: 5}
-        //]);
-
-        function populateRelationshipTable() {
-
-        }
 
         function drawNetworkViz() {
             var nodesArr = [];
@@ -330,17 +337,18 @@
             node['labels'] = [$(e.target).val()];
             console.log(configData);
             drawNetworkViz();
+            populateLabelSelects();
         }
 
         function drawRelationshipTable(){
-            var relTableBody = $('#relTableBody');
+            var relTableBody = $('#relTableBody').children().not(':first').remove();
             _.forEach(configData.relationships, function(rel, i) {
                 if (rel.from && rel.to) {
                     var row = "<tr>";
                     row += "<td>" + rel.from.label + ":" + rel.from.neoKey + "</td>";
                     row += "<td>" + rel.name + "</td>";
                     row += "<td>" + rel.to.label + ":" + rel.to.neoKey + "</td>";
-                    relTableBody.append(row);
+                    $('#relTableBody').append(row);
                 }
 
             })
@@ -353,22 +361,27 @@
         $('.labelInput').change(function(e){handleUpdateLabel(e)});
 
         $('#createRelButton').click(function() {
-            var from = $('#fromInput').val();
-            var to = $('#toInput').val();
+            //var from = $('#fromInput').val();
+            //var to = $('#toInput').val();
+
+
+
             var relName = $('#nameInput').val();
             var filename = $('#filenameInput').val();
 
             // FIXME: this will be replaced when moving to drop downs in modal
-            var fromArr = from.split(":");
-            var toArr = to.split(":");
-            var fromLabel = fromArr[0];
-            var fromKey = fromArr[1];
-            var fromFileKey = fromArr[2];
+            //var fromArr = from.split(":");
+            //var toArr = to.split(":");
 
-            var toArr = to.split(":");
-            var toLabel = toArr[0];
-            var toKey = toArr[1];
-            var toFileKey = toArr[2];
+            var fromLabel = $('#fromLabelSelect').val();
+            var fromKey = $('#fromNeoKeySelect').val();
+            var fromFileKey = $('#fromHeaderKeySelect').val();
+
+            //var toArr = to.split(":");
+
+            var toLabel = $('#toLabelSelect').val();
+            var toKey = $('#toNeoKeySelect').val();
+            var toFileKey = $('#toHeaderKeySelect').val();
 
 
             var createdNewRelationship = false;
@@ -502,7 +515,182 @@
             })
         });
 
+        // TODO: get all labels
+        function getAllLabels() {
 
+            var labels = [];
+            _.forEach(configData.nodes, function(node) {
+                _.forEach(node.labels, function(label) {
+                    if (!_.includes(labels, label)) {
+                        labels.push(label);
+                    }
+
+                })
+            });
+
+            console.log(labels);
+            return labels;
+        }
+
+        // TODO: get all neoKeys (for a given label)
+        function neoKeysForLabel(label) {
+            var keys = [];
+            console.log(label);
+
+            var filteredNodes = _.filter(configData.nodes, function(node) {
+                return _.includes(node.labels, label);
+            });
+
+            console.log(filteredNodes);
+
+            _.forEach(filteredNodes, function(node){
+                _.forEach(node.properties, function(property){
+                    keys.push(property.neoKey);
+                });
+
+            });
+
+            return keys;
+        }
+
+        // TODO: get all neoKeys + headerKeys (for a given label)
+        function allKeysForLabel(label) {
+            var keys = [];
+
+            var filteredNodes = _.filter(configData.nodes, function(node) {
+                return _.includes(node.labels, label);
+            });
+
+            console.log(filteredNodes);
+
+            _.forEach(filteredNodes, function(node){
+                _.forEach(node.properties, function(property) {
+                    keys.push(property.neoKey);
+                    if (!_.includes(keys, property.headerKey)) {
+                        keys.push(property.headerKey);
+                    }
+                })
+
+            });
+
+            console.log(keys);
+            return keys;
+        }
+
+        // TODO: populate from / to dropdowns
+        function populateLabelSelects() {
+            var labels = getAllLabels();
+            console.log(labels);
+
+            $('#fromLabelSelect').empty();
+            $.each(labels, function(i, label){
+                $('#fromLabelSelect, #toLabelSelect')
+                        .append($("<option></option>")
+                        .attr("value", label)
+                        .text(label));
+            })
+
+        }
+
+        // TODO: input handlers
+
+
+
+        // fromLabelSelect handler
+        //   - on select make fromNeoKeySelect and fromHeaderKeySelect enabled
+        //   - populate fromNeoKeySelect and fromHeaderKeySelect with valid options
+
+        $('#fromLabelSelect').change(function(e){
+            var neoKeys = neoKeysForLabel($(this).val());
+            $('#fromNeoKeySelect').prop("disabled", false).empty();
+
+            $.each(neoKeys, function(i, key) {
+                $('#fromNeoKeySelect').append($("<option></option>")
+                        .attr("value", key)
+                        .text(key));
+
+            });
+
+            var allKeys = allKeysForLabel($('#fromLabelSelect').val());
+            $('#fromHeaderKeySelect').prop("disabled", false).empty();
+
+            $.each(allKeys, function (i, key) {
+                $('#fromHeaderKeySelect').append($("<option></option>")
+                        .attr("value", key)
+                        .text(key));
+            })
+
+
+        });
+
+//        $('#fromNeoKeySelect').change(function(e) {
+//            var allKeys = allKeysForLabel($('#fromLabelSelect').val());
+//            $('#fromHeaderKeySelect').prop("disabled", false).empty();
+//
+//            $.each(allKeys, function (i, key) {
+//                $('#fromHeaderKeySelect').append($("<option></option>")
+//                        .attr("value", key)
+//                        .text(key));
+//            })
+//        });
+
+        // toLabelSelect handler
+        //   - similar functionality ^^
+
+        $('#toLabelSelect').change(function(e){
+            var neoKeys = neoKeysForLabel($(this).val());
+            $('#toNeoKeySelect').prop("disabled", false).empty();
+
+            $.each(neoKeys, function(i, key) {
+                $('#toNeoKeySelect').append($("<option></option>")
+                        .attr("value", key)
+                        .text(key));
+
+            });
+
+            var allKeys = allKeysForLabel($('#toLabelSelect').val());
+            $('#toHeaderKeySelect').prop("disabled", false).empty();
+
+            $.each(allKeys, function (i, key) {
+                $('#toHeaderKeySelect').append($("<option></option>")
+                        .attr("value", key)
+                        .text(key));
+            })
+
+
+        });
+
+//        $('#toNeoKeySelect').change(function(e) {
+//            var allKeys = allKeysForLabel($('#toLabelSelect').val());
+//            $('#toHeaderKeySelect').prop("disabled", false).empty();
+//
+//            $.each(allKeys, function (i, key) {
+//                $('#toHeaderKeySelect').append($("<option></option>")
+//                        .attr("value", key)
+//                        .text(key));
+//            })
+//        });
+
+        $('#modalToggleButton').click(function(e) {
+            console.log("dont' show the modal");
+
+            // data-toggle="modal" data-target="#newRelModal"
+
+            var inputs = $('.labelInput');
+
+            for (var i=0;i<inputs.length;i++) {
+                if ($(inputs[i]).val() === '') {
+                    alert("Please select labels for all Nodes before adding relationships.");
+                    return false;
+                }
+            }
+
+            $('#newRelModal').modal('toggle');
+
+        });
+
+
+        populateLabelSelects();
         drawNetworkViz();
         drawRelationshipTable();  // FIXME: only skeleton of relationship object at load. dont' add row if missing properties
     });
