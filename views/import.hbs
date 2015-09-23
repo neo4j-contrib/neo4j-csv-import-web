@@ -48,7 +48,7 @@
             </form>
 
             <div class="col-sm-6">
-                <textarea class="form-control" rows="10" disabled>Status...</textarea>
+                <textarea class="form-control" id="statusTextArea" rows="10" disabled>Status...</textarea>
             </div>
         </div>
 
@@ -82,7 +82,15 @@
                 contentType: 'application/json',
                 url: '/importNeo4jInstance',
                 success: function(data) {
-                    console.log('success');
+                    console.log(data);
+                    $('#statusTextArea').val(JSON.stringify(data));
+                },
+                error: function(a,b,c) {
+                    console.log(a);
+                    console.log(b);
+                    console.log(c);
+                    $('#statusTextArea').val(JSON.stringify(b) + JSON.stringify(c));
+
                 }
             });
 
