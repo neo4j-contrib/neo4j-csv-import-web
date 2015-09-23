@@ -220,7 +220,10 @@ router.post('/importNeo4jInstance', function(req, res, next) {
     console.log(cypher);
     var obj = {};
     obj['query'] = cypher;
-    queryObjs.push(obj);
+    if (cypher.length > 1) {
+      queryObjs.push(obj);
+      console.log(queryObjs);
+    }
   });
 
   db.cypher({queries: queryObjs}, function(err, results) {
@@ -228,9 +231,11 @@ router.post('/importNeo4jInstance', function(req, res, next) {
     if (err) {
       console.log(err);
       //throw err;
-      next(err);
+      //res.send(json.stringify(err));
+      return next(err);
     }
     console.log(results);
+    res.send(results);
 
   });
 
