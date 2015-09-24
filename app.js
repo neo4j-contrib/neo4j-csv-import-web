@@ -120,10 +120,11 @@ if (config.redis_url === '') {
         secret: 'ljalsjdflj824aflj#$lkajd',
         store: store,
         resave: true,
-        saveUnititialized: true
+        saveUninitialized: true
     }));
 
     console.log("using Redis session store");
+    console.log(redis_url);
 }
 
 // Routes here
