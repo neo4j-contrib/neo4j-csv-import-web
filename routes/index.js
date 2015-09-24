@@ -165,10 +165,11 @@ router.post('/datamodel', function(req, res, next) {
 
 });
 
-router.get('/files/:filename', function(req, res, next) {
-  var filename = req.params.filename;
+router.get('/files/:uidparam/:filename', function(req, res, next) {
+  var filename = req.params.filename,
+      uidparam = req.params.uidparam;
 
-  var data = allFiles[filename]['data'];
+  var data = allFiles[uidparam][filename]['data'];
   //var data = req.session.fileData[filename]['data'];
 
   res.set('Content-Type', 'application/csv');
@@ -176,7 +177,8 @@ router.get('/files/:filename', function(req, res, next) {
 });
 
 router.get('/import', function(req, res, next) {
-  var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
+  var protocol = 'http://'; // other protocols?
+  var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData, protocol +req.headers.host, req.sessionID);
   var cypher = cypherBuilder.buildCypher();
   var csvCypher = cypherBuilder.buildCSVCypher();
   //var cypher = cypherBuilder.getTestCypher();
@@ -254,7 +256,9 @@ router.get('/load', function(req, res, next) {
 router.post('/load', function(req, res, next) {
   req.session.fileData = req.body;
   req.session.save();
-  allFiles = req.body;
+  allFiles[req.sessionID] = req.body;
+  //allFiles = req.body;
+  console.dir(req.session);
   //console.log(req.session.fileData);
 
 });
