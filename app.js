@@ -9,7 +9,9 @@ var express = require('express'),
     _ = require("lodash"),
     routes = require('./routes/index'),
     CypherBuilder = require('./lib/buildCypher'),
-    expressValidator = require('express-validator');
+    expressValidator = require('express-validator'),
+    RedisStore = require('connect-redis')(session),
+    config = require('./lib/config');
 
 
 
@@ -101,12 +103,28 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // express-session
-app.use(session({
-  genid: guid,
-  secret: 'ljalsjdflj824aflj#$lkajd',
-  resave: false,
-  saveUninitialized: true
-}));
+
+
+if (config.redis_url === '') {
+    app.use(session({
+        genid: guid,
+        secret: 'ljalsjdflj824aflj#$lkajd',
+        resave: false,
+        saveUninitialized: true
+    }));
+    console.log("using in-memory session store");
+
+} else {
+    var store = new RedisStore({url: config.redis_url});
+    app.use(session({
+        secret: 'ljalsjdflj824aflj#$lkajd',
+        store: store,
+        resave: true,
+        saveUnititialized: true
+    }));
+
+    console.log("using Redis session store");
+}
 
 // Routes here
 app.use('/', routes);
