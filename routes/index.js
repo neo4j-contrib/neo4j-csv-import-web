@@ -199,14 +199,18 @@ router.post('/importNeo4jInstance', function(req, res, next) {
   var username = req.body.neo4jUser,
       password = req.body.neo4jPassword,
       neo4jURL = req.body.neo4jURL;
+  var connConfig = {
+    "url": neo4jURL
+  };
 
-  var db = new neo4j.GraphDatabase({
-    "url": neo4jURL,
-    "auth": {
+  if (username.length > 0 && password.length > 0) {
+    connConfig['auth'] = {
       "username": username,
       "password": password
-    }
-  });
+    };
+  }
+
+  var db = new neo4j.GraphDatabase(connConfig);
 
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
 
@@ -231,11 +235,12 @@ router.post('/importNeo4jInstance', function(req, res, next) {
     if (err) {
       console.log(err);
       //throw err;
-      //res.send(json.stringify(err));
-      return next(err);
+      res.send(err);
+      //return next(err);
+    } else {
+      console.log(results);
+      res.send(results);
     }
-    console.log(results);
-    res.send(results);
 
   });
 

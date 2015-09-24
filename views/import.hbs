@@ -21,21 +21,21 @@
                 <div class="form-group">
                     <label for="inputNeo4jURL" class="col-sm-2 control-label">Neo4j URL</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" id="inputNeo4jURL" placeholder="http://localhost:7474/db/data">
+                        <input type="text" class="form-control" id="inputNeo4jURL" placeholder="http://localhost:7474" value="http://localhost:7474" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputNeo4jUser" class="col-sm-2 control-label">Neo4j Username</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" id="inputNeo4jUser" placeholder="neo4j">
+                        <input type="text" class="form-control" id="inputNeo4jUser" placeholder="(Optional)">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="inputNeo4jPassword" class="col-sm-2 control-label">Neo4j Password</label>
                     <div class="col-sm-6">
-                        <input type="password" class="form-control" id="inputNeo4jPassword" placeholder="Password">
+                        <input type="password" class="form-control" id="inputNeo4jPassword" placeholder="(Optional)">
                     </div>
                 </div>
 
@@ -66,9 +66,18 @@
     $(function(){
         $('#importButton').click(function(e) {
             e.preventDefault();
+
+
+
             var neo4jURL = $('#inputNeo4jURL').val(),
                 neo4jUser = $('#inputNeo4jUser').val(),
                 neo4jPassword = $('#inputNeo4jPassword').val();
+            $('#statusTextArea').val("Running query...");
+
+            if (neo4jURL === '') {
+                alert("You must specify a valid URL for an existing Neo4j instance.");
+                return false;
+            }
 
             var neo4jConn = {
                 "neo4jURL": neo4jURL,
