@@ -260,6 +260,7 @@ router.post('/load', function(req, res, next) {
   //allFiles = req.body;
   console.dir(req.session);
   //console.log(req.session.fileData);
+  res.send('OK');
 
 });
 
@@ -271,16 +272,16 @@ router.get('/load2', function(req, res, next) {
 
 });
 
-router.post('/load2', function(req, res, next) {
-  var formData = req.body;
-  console.dir(formData);
-
-  req.session.configData = parseLoadData(formData, req.session.fileData);
-  req.session.save();
-
-  res.redirect('/datamodel');
-
-});
+//router.post('/load2', function(req, res, next) {
+//  var formData = req.body;
+//  console.dir(formData);
+//
+//  req.session.configData = parseLoadData(formData, req.session.fileData);
+//  req.session.save();
+//
+//  res.redirect('/datamodel');
+//
+//});
 
 router.get('/preview/:filename', function(req, res, next) {
   var filename = req.params.filename;
