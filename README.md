@@ -5,6 +5,10 @@ A web tool to make importing csv files into Neo4j super easy.
 
 **NOTE: This is a prototype version meant to provide a basic level of functionality useful for gathering initial feedback.**
 
+## Quickstart
+
+`neo4j-csv-import-web` is running on Heroku at [https://neo4j-csv-import.herokuapp.com/](https://neo4j-csv-import.herokuapp.com/)
+
 ## Dependencies
 
 `neo4j-csv-import-web` is a node.js web application, therefore node.js (and npm, the node package manager which is bundled with node) is required. Installation instructions are available [here](http://nodejs.org)
@@ -41,23 +45,203 @@ There are essentially two components to this project: a web application that pro
  
 #### `parsedFilesData`
  
- This object contains data from the parsed csv files for import in the format returned by Papaparse. 
+ This object contains data from the parsed csv files for import in the format returned by Papaparse. The data for a parsed CSV file with headers looks like this:
  
- * TODO: format / example from test
+ ~~~
+ {
+   "committee-members.csv": {
+         "data": [
+             {
+                 "committeeID": "HSAG",
+                 "legislatorID": 136,
+                 "rank": 1
+             },
+             {
+                 "committeeID": "HSAG",
+                 "legislatorID": 172,
+                 "rank": 2
+             },
+             {
+                 "committeeID": "HSAP",
+                 "legislatorID": 172,
+                 "rank": 3
+             },
+             {
+                 "committeeID": "HSAP",
+                 "legislatorID": 179,
+                 "rank": 2
+             },
+             {
+                 "committeeID": "HSAS",
+                 "legislatorID": 179,
+                 "rank": 2
+             },
+             {
+                 "committeeID": "HSAS",
+                 "legislatorID": 1828,
+                 "rank": 1
+             },
+             {
+                 "committeeID": "HSAS",
+                 "legislatorID": 136,
+                 "rank": 2
+             }
+         ],
+         "errors": [],
+         "meta": {
+             "aborted": false,
+             "cursor": 1100,
+             "delimiter": ",",
+             "fields": [
+                 "committeeID",
+                 "legislatorID",
+                 "rank"
+             ],
+             "linkbreak": "\n",
+             "truncated": true
+         }
+     }
+}
+~~~
  
 #### `configData`
  
- This object contains the user-defined configuration / mappings for data import.
+ This object contains the user-defined configuration / mappings for data import. This object defines the nodes, relationships, and properties of the user-defined data model. 
   
-* TODO: format / example from test
+~~~
+{
+    "nodes": [
+        {
+            "filename": "legislators.csv",
+            "labels": ["Legislator"],
+            "properties": [
+                {
+                    "headerKey": "thomasID",
+                    "neoKey": "thomasID",
+                    "dataType": "int",
+                    "index": true,
+                    "primaryKey": true,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "firstName",
+                    "neoKey": "firstName",
+                    "dataType": "string",
+                    "index": false,
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "lastName",
+                    "neoKey": "lastName",
+                    "dataType": "string",
+                    "index": false,
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "type",
+                    "neoKey": "body",
+                    "dataType": "string",
+                    "index": false,
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "party",
+                    "neoKey": "party",
+                    "dataType": "string",
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                }
+            ]
+        },
+        {
+            "filename": "committees.csv",
+            "labels": ["Committee"],
+            "properties": [
+                {
+                    "headerKey": "thomasID",
+                    "neoKey": "thomasID",
+                    "dataType": "string",
+                    "index": true,
+                    "primaryKey": true,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "jurisdiction",
+                    "neoKey": "jurisdiction",
+                    "dataType": "string",
+                    "index": false,
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "name",
+                    "neoKey": "name",
+                    "dataType": "string",
+                    "index": false,
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "type",
+                    "neoKey": "body",
+                    "dataType": "string",
+                    "index": false,
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                },
+                {
+                    "headerKey": "url",
+                    "neoKey": "url",
+                    "dataType": "string",
+                    "index": false,
+                    "primaryKey": false,
+                    "foreignKey": false,
+                    "skip": false
+                }
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "filename": "committee-members.csv",
+            "from": {
+                "filename": "legislators.csv",
+                "neoKey": "thomasID",
+                "fileKey": "legislatorID",
+                "label": "Legislator"
+            },
+            "to": {
+                "filename": "committees.csv",
+                "neoKey": "thomasID",
+                "fileKey": "committeeID",
+                "label": "Committee"
+            },
+            "name": "SERVES_ON"
+        }
+    ]
+
+}
+~~~
 
 ## TODO
 
 - [ ] basic web UI
-- [ ] handle CSV parsing
-- [ ] define data model config mappings
+- [x] handle CSV parsing
+- [x] define data model config mappings
 - [ ] create data model config from user guided web UI 
 - [ ] functionality to validate data model config
 - [ ] generate Cypher CREATE statements
 - [ ] generate Cypher LOAD CSV statements
-- [ ] connect to existing Neo4j instance
+- [x] connect to existing Neo4j instance
