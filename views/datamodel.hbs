@@ -81,7 +81,7 @@
                             <tr>
                                 <th>Column</th>
                                 <th>Rename</th>
-                                <th>Skip</th>
+                                <th>Skip <button type="button" class="btn btn-default btn-xs" id="toggleSkipButton">Toggle All</button></th>
                                 <th>PK</th>
                                 <th>Datatype</th>
                                 <th>Create Index</th>
@@ -709,6 +709,12 @@
 
             $('#newRelModal').modal('toggle');
 
+        });
+
+        $('#toggleSkipButton').click(function(e){
+            $("input[type='checkbox']:visible.skipCheckBox").prop( "checked", function( i, val ) {
+                return !val;
+            });
         });
 
 
