@@ -1,3 +1,8 @@
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    For each file choose whether you would like to include it in the data import and if the file defines nodes or relationships. You can also preview a few lines of the file to see what data it contains.
+</div>
+
 <h1>Files pending import</h1>
 <form action="/load2" method="post">
 <div class="row">
@@ -6,10 +11,10 @@
     <tbody>
         <tr>
             <th>Import</th>
-            <th>Node</th>
+            <th>Node <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Node" data-content="Each CSV file represents a Node, Relationship or both."></span></th>
             <th>Relationship</th>
             <th>Don't Know</th>
-            <th>Headers</th>
+            <th>Headers <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Column Headers" data-content="Currently all CSV files must have headers."></span></th>
             <th>File name</th>
             <th>Size</th>
             <th>Rows</th>
@@ -21,7 +26,7 @@
             <th><label><input type="checkbox" name="{{this}}importCheck" checked></label></th>
             <th><label><input type="radio" name="{{this}}typeRadios" value="node" checked></label></th>
             <th><label><input type="radio" name="{{this}}typeRadios" value="relationship"></label></th>
-            <th><label><input type="radio" name="{{this}}typeRadios" value="unknown"></label></th>
+            <th><label><input type="radio" name="{{this}}typeRadios" value="unknown" disabled></label></th>
             <th><label><input type="checkbox" name="{{this}}headersCheck" checked disabled></label></th>
             <th>{{this}}</th>
             <th>-</th>
@@ -41,3 +46,11 @@
 </div>
 
     </form>
+
+<script>
+    $(function() {
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    });
+</script>

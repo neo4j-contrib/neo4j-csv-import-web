@@ -6,6 +6,11 @@
     }
 </style>
 
+<div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    Now we're ready to configure the property graph data model. Step 1) Declare Label names for each Node. Step 2) Select which column defines the primary key for each Node. Optionally, rename or skip any columns. Step 3) Create relationships with the "Create New" button. When your data model is defined, click the Next button to begin import to Neo4j.
+</div>
+
 <div class="row">
     <div class="col-xs-6">
         <h3>Relationships</h3>
@@ -214,6 +219,7 @@
     // toggle the node button off
     // toggle the relationship button on
 
+    // TODO: move into document.ready
     _.forEach(configData.relationships, function(relObject) {
        var filename = relObject.filename.split(".").join("");
         console.log(filename);
