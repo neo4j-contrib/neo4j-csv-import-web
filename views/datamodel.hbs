@@ -188,7 +188,14 @@
                     <div class="form-group">
                         <label for="filenameInput" class="col-sm-2 control-label">Filename</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="filenameInput" placeholder="legislators.csv">
+                            <select class="form-control" id="filenameInput" placeholder="legislators.csv">
+                            {{# each files}}
+                                <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+
+
+                            </select>
+
                         </div>
                     </div>
 
