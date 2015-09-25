@@ -582,13 +582,16 @@
             var labels = getAllLabels();
             console.log(labels);
 
-            $('#fromLabelSelect').empty();
+            $('#fromLabelSelect, #toLabelSelect').empty();
             $.each(labels, function(i, label){
                 $('#fromLabelSelect, #toLabelSelect')
                         .append($("<option></option>")
                         .attr("value", label)
                         .text(label));
-            })
+            });
+
+            updateFromLabelSelects();
+            updateToLabelSelects();
 
         }
 
@@ -600,8 +603,8 @@
         //   - on select make fromNeoKeySelect and fromHeaderKeySelect enabled
         //   - populate fromNeoKeySelect and fromHeaderKeySelect with valid options
 
-        $('#fromLabelSelect').change(function(e){
-            var neoKeys = neoKeysForLabel($(this).val());
+        function updateFromLabelSelects() {
+            var neoKeys = neoKeysForLabel($("#fromLabelSelect").val());
             $('#fromNeoKeySelect').prop("disabled", false).empty();
 
             $.each(neoKeys, function(i, key) {
@@ -619,7 +622,11 @@
                         .attr("value", key)
                         .text(key));
             })
+        }
 
+        $('#fromLabelSelect').change(function(e){
+
+            updateFromLabelSelects();
 
         });
 
@@ -637,8 +644,8 @@
         // toLabelSelect handler
         //   - similar functionality ^^
 
-        $('#toLabelSelect').change(function(e){
-            var neoKeys = neoKeysForLabel($(this).val());
+        function updateToLabelSelects() {
+            var neoKeys = neoKeysForLabel($("#toLabelSelect").val());
             $('#toNeoKeySelect').prop("disabled", false).empty();
 
             $.each(neoKeys, function(i, key) {
@@ -656,8 +663,10 @@
                         .attr("value", key)
                         .text(key));
             })
+        }
 
-
+        $('#toLabelSelect').change(function(e){
+            updateToLabelSelects();
         });
 
 //        $('#toNeoKeySelect').change(function(e) {
