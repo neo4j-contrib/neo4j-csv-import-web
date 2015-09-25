@@ -95,6 +95,7 @@
                 var obj = {};
                 obj['statement'] = cypher;
                 obj['parameters'] = {};
+                obj['includeStats'] = true;
                 obj['resultDataContents'] = ["row", "graph"];
                 if (cypher.length > 1) {
                     statements.push(obj);
