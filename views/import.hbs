@@ -67,9 +67,10 @@
 
 <script>
     $(function(){
+
+        var loadCSVCypher= {{{stringify this.loadCSVCypher}}};
         $('#importButton').click(function(e) {
             e.preventDefault();
-
 
 
             var neo4jURL = $('#inputNeo4jURL').val(),
@@ -88,23 +89,61 @@
                 "neo4jPassword": neo4jPassword
             };
 
+            var statements = [];
+            var cypherArr = loadCSVCypher.split(";");
+            _.forEach(cypherArr, function(cypher) {
+                var obj = {};
+                obj['statement'] = cypher;
+                obj['parameters'] = {};
+                obj['resultDataContents'] = ["row", "graph"];
+                if (cypher.length > 1) {
+                    statements.push(obj);
+                }
+            });
+
+            var url = neo4jURL.replace(/\/db\/data.*/,"") + "/db/data/transaction/commit";
+            function authHeader() {
+                if (neo4jUser && neo4jPassword) {
+                    return {"Authorization": "Basic " + btoa(neo4jUser + ":" + neo4jPassword)};
+                } else {
+                    return {};
+                }
+            }
+
             $.ajax({
                 type: 'POST',
-                data: JSON.stringify(neo4jConn),
+                data: JSON.stringify({
+                    statements: statements
+                }),
                 contentType: 'application/json',
-                url: '/importNeo4jInstance',
+                url: url,
+                error: function(xhr, statusText, errorThrown){
+                   $('#statusTextArea').val(xhr.responseText || "Request failed, check authorization settings.");
+                },
+                headers: authHeader(),
                 success: function(data) {
                     console.log(data);
                     $('#statusTextArea').val(JSON.stringify(data));
-                },
-                error: function(a,b,c) {
-                    console.log(a);
-                    console.log(b);
-                    console.log(c);
-                    $('#statusTextArea').val(JSON.stringify(b) + JSON.stringify(c));
-
                 }
             });
+
+//            $.ajax({
+//                type: 'POST',
+//                data: JSON.stringify(neo4jConn),
+//                contentType: 'application/json',
+//                url: '/importNeo4jInstance',
+//                success: function(data) {
+//                    console.log(data);
+//                    $('#statusTextArea').val(JSON.stringify(data));
+//                },
+//                error: function(a,b,c) {
+//                    console.log(a);
+//                    console.log(b);
+//                    console.log(c);
+//                    $('#statusTextArea').val(JSON.stringify(b) + JSON.stringify(c));
+//
+//                }
+//            });
 
 
 
