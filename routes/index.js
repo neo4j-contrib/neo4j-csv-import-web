@@ -181,6 +181,7 @@ router.get('/import', function(req, res, next) {
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData, protocol +req.headers.host, req.sessionID);
   var cypher = cypherBuilder.buildCypher();
   var csvCypher = cypherBuilder.buildCSVCypher();
+  var cypherConstraints = cypherBuilder.cypherConstraints();
   //var cypher = cypherBuilder.getTestCypher();
 
   // get filedata and config data from session
@@ -188,7 +189,7 @@ router.get('/import', function(req, res, next) {
   // pass cypher in the context object
   // populate textarea with cypher in template
   // add js event handler to call ajax method to connect / run against Neo4j instance
-  res.render('import', {cypher: cypher, loadCSVCypher: csvCypher});
+  res.render('import', {cypher: cypher, loadCSVCypher: csvCypher, cypherConstraints: cypherConstraints});
 });
 
 router.post('/importNeo4jInstance', function(req, res, next) {

@@ -58,7 +58,7 @@
         <div role="tabpanel" class="tab-pane" id="loadcsv">
             <h2 class="text-left">Cypher <small>Run this Cypher in a Neo4j instance to import your data.</small></h2>
             <p class="text-right"><a href="#download">Download</a> | <a href="#copy">Copy</a></p>
-            <textarea class="form-control" rows="10" disabled>{{loadCSVCypher}}</textarea>
+            <textarea class="form-control" rows="10" disabled>{{cypherConstraints}} {{loadCSVCypher}}</textarea>
         </div>
     </div>
 
@@ -68,7 +68,8 @@
 <script>
     $(function(){
 
-        var loadCSVCypher= {{{stringify this.loadCSVCypher}}};
+        var loadCSVCypher= {{{stringify this.loadCSVCypher}}},
+            cypherConstraints = {{{ stringify this.cypherConstraints}}}
         $('#importButton').click(function(e) {
             e.preventDefault();
 
@@ -89,8 +90,13 @@
                 "neo4jPassword": neo4jPassword
             };
 
-            var statements = [];
-            var cypherArr = loadCSVCypher.split(";");
+            var statements = [],
+                constraintStatements = [];
+
+            var cypherArr = loadCSVCypher.split(";"),
+                constraintArr = cypherConstraints.split(";");
+
+            // TODO: extract into func to avoid duplication
             _.forEach(cypherArr, function(cypher) {
                 var obj = {};
                 obj['statement'] = cypher;
@@ -99,6 +105,17 @@
                 obj['resultDataContents'] = ["row", "graph"];
                 if (cypher.length > 1) {
                     statements.push(obj);
+                }
+            });
+
+            _.forEach(constraintArr, function(cypher) {
+                var obj = {};
+                obj['statement'] = cypher;
+                obj['parameters'] = {};
+                obj['includeStats'] = true;
+                obj['resultDataContents'] = ["row", "graph"];
+                if (cypher.length > 1) {
+                    constraintStatements.push(obj);
                 }
             });
 
@@ -111,42 +128,43 @@
                 }
             }
 
+            console.log(statements);
+
+            // FIXME: extract logic here
             $.ajax({
                 type: 'POST',
                 data: JSON.stringify({
-                    statements: statements
+                    statements: constraintStatements
                 }),
                 contentType: 'application/json',
                 url: url,
                 error: function(xhr, statusText, errorThrown){
-                   $('#statusTextArea').val(xhr.responseText || "Request failed, check authorization settings.");
+                    $('#statusTextArea').val(xhr.responseText || "Request failed, check authorization settings.");
                 },
                 headers: authHeader(),
                 success: function(data) {
                     console.log(data);
-                    $('#statusTextArea').val(JSON.stringify(data));
+                    $('#statusTextArea').val($('#statusTextArea').val() + JSON.stringify(data, null, 4));
+                    $.ajax({
+                        type: 'POST',
+                        data: JSON.stringify({
+                            statements: statements
+                        }),
+                        contentType: 'application/json',
+                        url: url,
+                        error: function(xhr, statusText, errorThrown){
+                            $('#statusTextArea').val(xhr.responseText || "Request failed, check authorization settings.");
+                        },
+                        headers: authHeader(),
+                        success: function(data) {
+                            console.log(data);
+                            // FIXME: multiple jquery selections
+                            $('#statusTextArea').val($('#statusTextArea').val() + JSON.stringify(data, null, 4));
+                            $('#statusTextArea').val($('#statusTextArea').val() + "\nALL DONE!");
+                        }
+                    });
                 }
             });
-
-//            $.ajax({
-//                type: 'POST',
-//                data: JSON.stringify(neo4jConn),
-//                contentType: 'application/json',
-//                url: '/importNeo4jInstance',
-//                success: function(data) {
-//                    console.log(data);
-//                    $('#statusTextArea').val(JSON.stringify(data));
-//                },
-//                error: function(a,b,c) {
-//                    console.log(a);
-//                    console.log(b);
-//                    console.log(c);
-//                    $('#statusTextArea').val(JSON.stringify(b) + JSON.stringify(c));
-//
-//                }
-//            });
-
-
 
         });
         // event handler for import button
