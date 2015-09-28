@@ -11,6 +11,9 @@
 
 
 <script>
+    var fileData = {},
+        fileNames = [];
+
     function handleFileSelect(evt) {
         var file = evt.target.files[0];
 
@@ -22,34 +25,20 @@
                 //preview: 100,
                 complete: function(results, file) {
                     var data = results;
-                    console.log(data);
-                    var fileList = JSON.parse(localStorage.getItem("csvFileNames"));
-                    fileList.push(file.name);
-                    localStorage.setItem("csvFileNames", JSON.stringify(fileList));
-                    localStorage.setItem("csvimportFile" + file.name, JSON.stringify(data));
-                    console.log(file);
+
+                    fileData[file.name] = data;
+                    fileNames.push(file.name);
                 }
             },
             before: function(file, inputElem) {
                 console.log(file);
             },
             complete: function() {
-                console.log("done parsing all files");
 
-                var allFileData = {};
-                var fileNames = JSON.parse(localStorage.getItem("csvFileNames"));
-                allFileData['files'] = fileNames;
-
-                $.each(fileNames, function(i, fileName) {
-                    var key = "csvimportFile" + fileName;
-                    var fileData = JSON.parse(localStorage.getItem(key));
-                    allFileData[fileName] = fileData;
-
-                });
-
+                fileData['files'] = fileNames;
                 $.ajax({
                     type: 'POST',
-                    data: JSON.stringify(allFileData),
+                    data: JSON.stringify(fileData),
                     contentType: 'application/json',
                     url: '/load',
                     success: function(data) {
@@ -58,15 +47,11 @@
                     }
 
                 });
-
-
-                }
+            }
         });
     }
 
     $(document).ready(function(){
-        var emptyArray = [];
-        localStorage.setItem("csvFileNames", JSON.stringify(emptyArray));
         $("#csv-file").change(handleFileSelect);
     })
 </script>
