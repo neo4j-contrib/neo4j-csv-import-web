@@ -108,7 +108,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if (config.redis_url === '') {
     app.use(session({
         genid: guid,
-        secret: 'ljalsjdflj824aflj#$lkajd',
+        secret: config.session_secret,
         resave: false,
         saveUninitialized: true
     }));
@@ -117,7 +117,7 @@ if (config.redis_url === '') {
 } else {
     var store = new RedisStore({url: config.redis_url});
     app.use(session({
-        secret: 'ljalsjdflj824aflj#$lkajd',
+        secret: config.session_secret,
         store: store,
         resave: true,
         saveUninitialized: true
