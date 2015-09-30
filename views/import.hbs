@@ -13,8 +13,8 @@
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="cypher">
             <h2 class="text-left">Cypher <small>Run this Cypher in a Neo4j instance to import your data.</small></h2>
-            <p class="text-right"><a href="#download">Download</a> | <a href="#copy">Copy</a></p>
-            <textarea class="form-control" rows="25" disabled>{{cypher}}</textarea>
+            <p class="text-right"><a href="#download">Download</a> | <button href="#copy" class="btn copyBtn"  data-clipboard-target="#cypherText">Copy</button></p>
+            <textarea class="form-control" id="cypherText" rows="25" readonly>{{cypher}}</textarea>
         </div>
 
         <div role="tabpanel" class="tab-pane" id="connect">
@@ -57,8 +57,8 @@
 
         <div role="tabpanel" class="tab-pane" id="loadcsv">
             <h2 class="text-left">Cypher <small>Run this Cypher in a Neo4j instance to import your data.</small></h2>
-            <p class="text-right"><a href="#download">Download</a> | <a href="#copy">Copy</a></p>
-            <textarea class="form-control" rows="10" disabled>{{cypherConstraints}} {{loadCSVCypher}}</textarea>
+            <p class="text-right"><a href="#download">Download</a> | <button class="btn copyBtn" data-clipboard-target="#loadCSVCypherText">Copy</button></p>
+            <textarea class="form-control" id="loadCSVCypherText" rows="10" readonly>{{cypherConstraints}} {{loadCSVCypher}}</textarea>
         </div>
     </div>
 
@@ -68,7 +68,14 @@
 <script>
     $(function(){
 
-        var loadCSVCypher= {{{stringify this.loadCSVCypher}}},
+        var clipboard = new Clipboard('.copyBtn');
+
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+        });
+
+
+        var loadCSVCypher = {{{ stringify this.loadCSVCypher}}},
             cypherConstraints = {{{ stringify this.cypherConstraints}}}
         $('#importButton').click(function(e) {
             e.preventDefault();
@@ -172,3 +179,5 @@
 
     });
 </script>
+
+<script src="/js/clipboard.min.js"></script>
