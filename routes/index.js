@@ -3,7 +3,8 @@ var express = require('express'),
     _ = require('lodash'),
     neo4j = require('neo4j'),
     CypherBuilder = require('../lib/buildCypher'),
-    babyparse = require("babyparse");
+    babyparse = require("babyparse"),
+    guidShort = require('../lib/util').guidShort;
 
 // hold all data in memory to be served up for LOAD CSV
 // FIXME: find a better way to persist this data
@@ -49,6 +50,7 @@ function parseLoadData(formData, fileData) {
       node['filename'] = file;
       node['labels']  = [];
       node['properties']  = [];
+      node['guid'] = guidShort();
 
       _.forEach(fileData[file]['meta']['fields'], function(field) {
         var properties = {};
@@ -65,6 +67,7 @@ function parseLoadData(formData, fileData) {
     } else if (formData[file+'typeRadios'] === 'relationship') {
       var rel = {};
       rel['filename'] = file;
+      rel['guid'] = guidShort();
       rels.push(rel);
     }
   });

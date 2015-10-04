@@ -36,78 +36,195 @@
         <!-- <img src="http://placehold.it/350x400"> -->
     </div>
 </div>
-<form action="/datamodel" method="post">
+<div>
 <!--<div class="row"> -->
 
     <div>
 
         <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            {{#each files}}
-                <li role="presentation"><a href="#{{stripstr this}}" aria-controls="{{stripstr this}}" role="tab" data-toggle="tab">{{this}}</a></li>
-            {{/each}}
-
-
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            {{#each files}}
-                <div role="tabpanel" class="tab-pane" data-filename="{{this}}" id="{{stripstr this}}">
-                    <div class="{{stripstr this}}-nodePaneDiv">
-                    <div class="row">
-                    <div class="btn-group" role="group" aria-label="nodeRelSelect" style="padding:20px;">
-                        <button id="{{stripstr this}}-node-button" type="button" class="btn btn-default active">Node</button>
-                        <button id="{{stripstr this}}-rel-button" type="button" class="btn btn-default" disabled>Relationship</button>
+        <div class="row" style="padding:20px;">
+            <div class="col-sm-10">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#nodesTab" role="tab" data-toggle="tab">Nodes</a></li>
+                    <li role="presentation"><a href="#relsTab" role="tab" data-toggle="tab" id="relationshipTabNav">Relationships</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-2">
+                <div class="btn-toolbar" role="toolbar" aria-label="fileActionButtons">
+                    <!-- <div class="btn-group btn-group-sm" role="group" aria-label="newActionButtons">
+                        <button type="button" class="btn btn-default">New Node</button>
+                        <button type="button" class="btn btn-default">New Relationship</button>
+                    </div> -->
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="submit" id="submit" class="btn btn-success">Import >></button>
                     </div>
-                        </div>
-                    <div id="{{stripstr this}}-datamodel-pane">
-                    <div class="row">
-                        <div class="col-sm-6">
-                    <div class="form-group">
-
-                        <label for="{{stripstr this}}LabelInput" class="col-sm-2 control-label">Label</label>
-                        <div class="col-sm-10" style="padding:20px;">
-                            <input type="text" class="form-control labelInput" name="{{stripstr this}}LabelInput" data-id="{{this}}" id="{{this}}LabelInput" placeholder="Node" required>
-                        </div>
-                    </div>
-                        </div>
-
-                    </div>
-
-
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <th>Column</th>
-                                <th>Rename</th>
-                                <th>Skip <button type="button" class="btn btn-default btn-xs" id="toggleSkipButton">Toggle All</button></th>
-                                <th>PK</th>
-                                <th>Datatype</th>
-                                <th>Create Index</th>
-                                <th>FK</th>
-                            </tr>
-                            {{datamodelTable this ../this ../this.config}}
-                        </tbody>
-                    </table>
-                    </div>
-                    </div>
-                    <h3 id="{{stripstr this}}-rel-message" style="display:none;">Please configure this relationship using "Create New" relationship button above.</h3>
                 </div>
-            {{/each}}
+            </div>
+        </div>
+
+        <div class="tab-content">
+            <div role="tabpanel active" class="tab-pane active" id="nodesTab">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <ul class="nav nav-tabs" role="tablist">
+                            {{# each config.nodes}}
+                                <li role="presentation" class="nodeTabListItem"><a href="#{{guid}}" aria-controls="{{guid}}" role="tab" data-toggle="tab">{{filename}}</a></li>
+                            {{/each}}
+
+                        </ul>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-default btn-xs" id="newNodeButton">New Node</button>
+                    </div>
+                </div>
+
+
+                <div class="tab-content">
+                    {{# each config.nodes}}
+                        <div role="tabpanel" class="tab-pane node-tab-pane" id="{{guid}}">
+                            <div class="{{guid}}-nodePaneDiv">
+                                <div id="{{guid}}-datamodelPane">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="{{guid}}-labelInput" class="col-sm-2 control-label">Label</label>
+                                                <div class="col-sm-10" style="padding:20px;">
+                                                    <input type="text" class="form-control labelInput" name="{{guid}}-labelInput" data-id="{{guid}}" id="{{guid}}-labelInput" placeholder="Node" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table class="table">
+                                        <tbody>
+                                        <tr>
+                                            <th>Column</th>
+                                            <th>Rename</th>
+                                            <th>Skip <button type="button" class="btn btn-default btn-xs" id="toggleSkipButton">Toggle All</button></th>
+                                            <th>PK</th>
+                                            <th>Datatype</th>
+                                            <th>Create Index</th>
+                                            <th>FK</th>
+                                        </tr>
+                                        {{# each properties}}
+                                            <tr>
+                                                <td>{{headerKey}}</td>
+                                                <td><label><input class="renameLabel" data-guid="{{../guid}}" data-field="{{headerKey}}" type="text" name="{{../guid}}-{{headerKey}}-rename"></label></td>
+                                                <td><label><input class="skipCheckBox"data-guid="{{../guid}}" data-field="{{headerKey}}" type="checkbox" name="{{../guid}}-{{headerKey}}-skip"></label></td>
+                                                <td><label><input type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" class="pkcheckbox" name="{{../guid}}-{{headerKey}}-pk"></label></td>
+                                                <td><label><select><option value="---">---</option></select></label></td>
+                                                <td><label><input class="indexCheckbox" type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" name="{{../guid}}-{{headerKey}}-index"></label></td>
+                                                <td><button type="button" class="btn btn-sm">---</button></td>
+                                            </tr>
+                                        {{/each}}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+
+            <div role="tabpanel active" class="tab-pane" id="relsTab">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <ul class="nav nav-tabs col-sm-8" role="tablist">
+
+                            {{# each config.relationships}}
+                                <li role="presentation" class="relTabListItem"><a href="#{{guid}}" aria-controls="{{guid}}" role="tab" data-toggle="tab">{{filename}}</a></li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-default btn-xs" id="newRelationshipButton">New Relationship</button>
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    {{# each config.relationships}}
+                        <div role="tabpanel" class="tab-pane rel-tab-pane" id="{{guid}}">
+                                <form class="form-horizontal">
+                                    <div class="row col-sm-12">
+                                <div class="form-group">
+                                    <!-- FROM -->
+                                    <label for="{{guid}}-fromLabelSelect" class="col-sm-4 control-label">From - Label</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control labelSelect fromLabelSelect" id="{{guid}}-fromLabelSelect" data-guid="{{guid}}"><option value="---">Label</option></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{guid}}-fromNeoKeySelect" class="col-sm-4 control-label">From - neoKey</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="{{guid}}-fromNeoKeySelect" data-guid="{{guid}}" disabled><option value="---">Label</option></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{guid}}-fromHeaderKeySelect" class="col-sm-4 control-label">From - headerKey</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="{{guid}}-fromHeaderKeySelect" data-guid="{{guid}}" disabled><option value="---"></option></select>
+                                    </div>
+                                </div>
+
+                                <!-- TO -->
+                                <div class="form-group">
+                                    <label for="{{guid}}-toLabelSelect" class="col-sm-4 control-label">To - label</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control labelSelect toLabelSelect" id="{{guid}}-toLabelSelect" data-guid="{{guid}}"><option value="---">Label</option></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{guid}}-toNeoKeySelect" class="col-sm-4 control-label">To - neoKey</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="{{guid}}-toNeoKeySelect" data-guid="{{guid}}" disabled><option value="---">Label</option></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{guid}}-toHeaderKeySelect" class="col-sm-4 control-label">To - headerKey</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="{{guid}}-toHeaderKeySelect" data-guid="{{guid}}" disabled><option value="---">Label</option></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{guid}}-nameInput" class="col-sm-2 control-label">Relationship name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="{{guid}}-nameInput" data-guid="{{guid}}" placeholder="SERVES_ON">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="{{guid}}-filenameInput" class="col-sm-2 control-label">Filename</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" id="{{guid}}-filenameInput" data-guid="{{guid}}">
+                                            {{# each ../files }}
+                                                <option value="{{this}}">{{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button type="submit" class="btn btn-default config-rel-button" data-guid="{{guid}}">Add Relationship</button>
+                                    </div>
+                                </div>
+                                    </div>
+                            </form>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
 
         </div>
 
     </div>
-<!-- </div> -->
-
-<div class="row">
-    <div class="col-md-3 col-md-offset-9">
-        <button type="submit" id="submit" class="btn btn-success">Next</button>
     </div>
-
-</div>
-    </form>
 
 <!-- Modal -->
 <div class="modal fade" id="newRelModal" tabindex="-1" role="dialog"
@@ -227,38 +344,32 @@
     // toggle the relationship button on
 
     // TODO: move into document.ready
-    _.forEach(configData.relationships, function(relObject) {
-       var filename = relObject.filename.split(".").join("");
-        console.log(filename);
-        $('#'+filename +'-datamodel-pane').remove();
-        $('#'+filename + '-node-button').prop('disabled', true).removeClass("active");
-        $('#'+filename + '-rel-button').prop('disabled', false).addClass("active");
-        //$('#'+filename + '-nodePaneDiv').empty();
-        $('#'+filename + '-rel-message').show();
-
-    });
-
-    // TODO: update config data as form is updated
-    // benefits of this:
-    //  - can update visual with standard data format
-    //  - easier (client side) validation
+//    _.forEach(configData.relationships, function(relObject) {
+//       var filename = relObject.filename.split(".").join("");
+//        console.log(filename);
+//        $('#'+filename +'-datamodel-pane').remove();
+//        $('#'+filename + '-node-button').prop('disabled', true).removeClass("active");
+//        $('#'+filename + '-rel-button').prop('disabled', false).addClass("active");
+//        //$('#'+filename + '-nodePaneDiv').empty();
+//        $('#'+filename + '-rel-message').show();
+//
+//    });
 
     $(function() {
         // set first tab as active
-        $('.nav-tabs li').first().addClass("active");
-        $('.tab-pane').first().addClass("active");
+        //$('.nav-tabs li').first().show();
+        //$('.nav-tabs li').first().addClass("active");
+        //$('.tab-pane').first().addClass("active");
 
-        // FIXME: exactly one PK per file must be selected for each file
-        //$('#submit').click(function(e) {
-        //    if ($('.pkcheckbox:checkbox:checked').length != 1) {
-        //        e.preventDefault();
-        //        console.log($('.pkcheckbox:checkbox:checked').length);
-        //        alert("Exactly one Primary Key field must be selected");
-        //    }
+        $('.nodeTabListItem').first().addClass("active");
+        $('.relTabListItem').first().addClass("active");
+        $('.node-tab-pane').first().addClass("active");
+        $('.rel-tab-pane').first().addClass("active");
 
-        //})
-
-
+//        $("ul.nav-tabs a").click(function (e) {
+//            e.preventDefault();
+//            $(this).tab('show');
+//        });
 
         function drawNetworkViz() {
             var nodesArr = [];
@@ -328,7 +439,7 @@
 
             });
 
-            console.log(edges);
+            //console.log(edges);
 
             var data = {
                 nodes: new vis.DataSet(nodesArr),
@@ -344,9 +455,8 @@
             // update the config data
             // call drawNetworkViz()
             console.log(e);
-            var filename = $(e.target).data("id");
-            console.log(filename);
-            var node = _.find(configData.nodes, {filename: filename});
+            var guid = $(e.target).data("id");
+            var node = _.find(configData.nodes, {guid: guid});
             node['labels'] = [$(e.target).val()];
             console.log(configData);
             drawNetworkViz();
@@ -367,24 +477,15 @@
             })
         }
 
-        // TODO: build config objects here as form is manipulated instead of passing formdata to server
-
 
         // UI handlers
         $('.labelInput').change(function(e){handleUpdateLabel(e)});
 
         $('#createRelButton').click(function() {
-            //var from = $('#fromInput').val();
-            //var to = $('#toInput').val();
 
-
-
+            // TODO: This logic should be moved into relationship pane
             var relName = $('#nameInput').val();
             var filename = $('#filenameInput').val();
-
-            // FIXME: this will be replaced when moving to drop downs in modal
-            //var fromArr = from.split(":");
-            //var toArr = to.split(":");
 
             var fromLabel = $('#fromLabelSelect').val();
             var fromKey = $('#fromNeoKeySelect').val();
@@ -398,6 +499,7 @@
 
 
             var createdNewRelationship = false;
+            // FIXME: need to find on a guid here not a filename
             var newRel = _.find(configData.relationships, {filename: filename});
 
             if (!newRel) {
@@ -419,12 +521,6 @@
             newRel['from'] = fromObj;
             newRel['to'] = toObj;
 
-            // TODO: get relationship filename
-            // TODO: get from filename
-            // TODO: get to filename
-            // TODO: get from filekey
-            // TODO: get to filekey
-
 
             if (createdNewRelationship) {
                 configData.relationships.push(newRel);
@@ -437,19 +533,13 @@
 
         });
 
-
-        // need way of going from an event / input target to the node object
-        // filename / property
-        // TODO: rename handler
         $('.renameLabel').change(function(e){
-           // get node from config
-            // set neoKey
-            var filename = $(e.target).data("filename");
+
+            var guid = $(e.target).data("guid");
             var field = $(e.target).data("field");
 
-            var node = _.find(configData.nodes, {filename: filename});
+            var node = _.find(configData.nodes, {guid: guid});
             var property = _.find(node.properties, {headerKey: field});
-
             property['neoKey'] = $(e.target).val();
 
             console.log(configData);
@@ -458,10 +548,10 @@
         // TODO: include checkbox handler
 
         $('.skipCheckBox').change(function(e){
-            var filename = $(e.target).data("filename");
+            var guid = $(e.target).data("guid");
             var field = $(e.target).data("field");
 
-            var node = _.find(configData.nodes, {filename: filename});
+            var node = _.find(configData.nodes, {guid: guid});
             var property = _.find(node.properties, {headerKey: field});
 
             if ($(e.target).is(':checked')) {
@@ -475,10 +565,11 @@
         });
         // TODO: PK checkbox handler
         $('.pkcheckbox').change(function(e){
-            var filename = $(e.target).data("filename");
+            var guid = $(e.target).data("guid");
+            console.log(guid);
             var field = $(e.target).data("field");
 
-            var node = _.find(configData.nodes, {filename: filename});
+            var node = _.find(configData.nodes, {guid: guid});
             var property = _.find(node.properties, {headerKey: field});
 
             if ($(e.target).is(':checked')) {
@@ -496,10 +587,10 @@
         // TODO: Datatype dropdown handler
         // TODO: Create index handler
         $('.indexcheckbox').change(function(e){
-            var filename = $(e.target).data("filename");
+            var guid = $(e.target).data("guid");
             var field = $(e.target).data("field");
 
-            var node = _.find(configData.nodes, {filename: filename});
+            var node = _.find(configData.nodes, {guid: guid});
             var property = _.find(node.properties, {headerKey: field});
 
             if ($(e.target).is(':checked')) {
@@ -515,6 +606,7 @@
         // TODO: FK handler
 
         $('#submit').click(function(e){
+            // TODO: validate configuration object at this point
             e.preventDefault();
 
             $.ajax({
@@ -595,16 +687,17 @@
             var labels = getAllLabels();
             console.log(labels);
 
-            $('#fromLabelSelect, #toLabelSelect').empty();
+            $('.labelSelect').empty();
             $.each(labels, function(i, label){
-                $('#fromLabelSelect, #toLabelSelect')
+                $('.labelSelect')
                         .append($("<option></option>")
                         .attr("value", label)
                         .text(label));
             });
 
-            updateFromLabelSelects();
-            updateToLabelSelects();
+            updateAllLabelSelects();
+            //updateFromLabelSelects();
+            //updateToLabelSelects();
 
         }
 
@@ -616,19 +709,23 @@
         //   - on select make fromNeoKeySelect and fromHeaderKeySelect enabled
         //   - populate fromNeoKeySelect and fromHeaderKeySelect with valid options
 
-        function updateFromLabelSelects() {
-            var neoKeys = neoKeysForLabel($("#fromLabelSelect").val());
-            $('#fromNeoKeySelect').prop("disabled", false).empty();
+        function updateFromLabelSelects(el) {
+
+            var neoKeys = neoKeysForLabel(el.val());
+            var allKeys = allKeysForLabel(el.val());
+            var guid = el.data("guid");
+            var selectInputs = $('#' + guid + '-fromNeoKeySelect, #' + guid + '-fromHeaderKeySelect');
+
+            selectInputs.prop("disabled", false).empty();
 
             $.each(neoKeys, function(i, key) {
-                $('#fromNeoKeySelect').append($("<option></option>")
+                selectInputs.append($("<option></option>")
                         .attr("value", key)
                         .text(key));
-
             });
 
-            var allKeys = allKeysForLabel($('#fromLabelSelect').val());
-            $('#fromHeaderKeySelect').prop("disabled", false).empty();
+
+            // FIXME: this doesn't do anything now - should these fields really be actual fields for the selected file??
 
             $.each(allKeys, function (i, key) {
                 $('#fromHeaderKeySelect').append($("<option></option>")
@@ -637,10 +734,49 @@
             })
         }
 
-        $('#fromLabelSelect').change(function(e){
+        function updateToLabelSelects(el) {
+            var neoKeys = neoKeysForLabel(el.val());
+            var allKeys = allKeysForLabel(el.val());
+            var guid = el.data("guid");
+            var selectInputs = $('#' + guid + '-toNeoKeySelect, #' + guid + '-toHeaderKeySelect');
 
-            updateFromLabelSelects();
+            selectInputs.prop("disabled", false).empty();
 
+            $.each(neoKeys, function(i, key) {
+                selectInputs.append($("<option></option>")
+                        .attr("value", key)
+                        .text(key));
+
+            });
+
+
+            // FIXME: this doesn't do anything now - should these fields really be actual fields for the selected file??
+
+            $.each(allKeys, function (i, key) {
+                $('#toHeaderKeySelect').append($("<option></option>")
+                        .attr("value", key)
+                        .text(key));
+            })
+        }
+
+
+        function updateAllLabelSelects() {
+            // call updateFromLabelSelects with a selector for all fromLabelSelects
+            // call updateToLabelSelects with a selector for all toLabelSelects
+            updateFromLabelSelects($('.labelSelect'));
+            updateToLabelSelects($('.labelSelect'));
+
+
+        }
+
+        $('.fromLabelSelect').change(function(e){
+
+            updateFromLabelSelects($(e.target));
+
+        });
+
+        $('.toLabelSelect').change(function(e){
+            updateToLabelSelects($(e.target));
         });
 
 //        $('#fromNeoKeySelect').change(function(e) {
@@ -657,30 +793,7 @@
         // toLabelSelect handler
         //   - similar functionality ^^
 
-        function updateToLabelSelects() {
-            var neoKeys = neoKeysForLabel($("#toLabelSelect").val());
-            $('#toNeoKeySelect').prop("disabled", false).empty();
 
-            $.each(neoKeys, function(i, key) {
-                $('#toNeoKeySelect').append($("<option></option>")
-                        .attr("value", key)
-                        .text(key));
-
-            });
-
-            var allKeys = allKeysForLabel($('#toLabelSelect').val());
-            $('#toHeaderKeySelect').prop("disabled", false).empty();
-
-            $.each(allKeys, function (i, key) {
-                $('#toHeaderKeySelect').append($("<option></option>")
-                        .attr("value", key)
-                        .text(key));
-            })
-        }
-
-        $('#toLabelSelect').change(function(e){
-            updateToLabelSelects();
-        });
 
 //        $('#toNeoKeySelect').change(function(e) {
 //            var allKeys = allKeysForLabel($('#toLabelSelect').val());
@@ -693,7 +806,7 @@
 //            })
 //        });
 
-        $('#modalToggleButton').click(function(e) {
+        $('#modalToggleButton, #relationshipTabNav').click(function(e) {
             console.log("dont' show the modal");
 
             // data-toggle="modal" data-target="#newRelModal"
@@ -707,14 +820,72 @@
                 }
             }
 
-            $('#newRelModal').modal('toggle');
+            if ($(this).is('#modalToggleButton')) {
+                $('#newRelModal').modal('toggle');
+            }
+
 
         });
+
 
         $('#toggleSkipButton').click(function(e){
             $("input[type='checkbox']:visible.skipCheckBox").prop( "checked", function( i, val ) {
                 return !val;
             });
+        });
+
+        $('.config-rel-button').click(function(e){
+            var target = $(this);
+            var guid = $(this).data("guid");
+            e.preventDefault();
+
+            var relName = $('#'+ guid + '-nameInput').val();
+            var fileName= $('#' + guid + '-filenameInput').val();
+
+            var fromLabel = $('#' + guid +'-fromLabelSelect').val();
+            var fromKey = $('#' + guid + '-fromNeoKeySelect').val();
+            var fromFileKey = $('#' + guid + '-fromHeaderKeySelect').val();
+
+            var toLabel = $('#' + guid + '-toLabelSelect').val();
+            var toKey = $('#' + guid + '-toNeoKeySelect').val();
+            var toFileKey = $('#' + guid + '-toHeaderKeySelect').val();
+
+            var createdNewRelationship = false;
+
+            var newRel = _.find(configData.relationships, {guid: guid});
+
+            if (!newRel) {
+                newRel = {};
+                createdNewRelationship = true;
+            }
+
+            newRel['name'] = relName;
+            newRel['filename'] = fileName;
+
+            var fromObj = {};
+            fromObj['label'] = fromLabel;
+            fromObj['neoKey'] = fromKey;
+            fromObj['fileKey'] = fromFileKey;
+
+            var toObj = {};
+            toObj['label'] = toLabel;
+            toObj['neoKey'] = toKey;
+            toObj['fileKey'] = toFileKey;
+
+            newRel['from'] = fromObj;
+            newRel['to'] = toObj;
+
+            if (createdNewRelationship) {
+                configData.relationships.push(newRel);
+            }
+
+            console.log(configData);
+
+            drawRelationshipTable();
+            updateNetworkViz();
+
+
+
         });
 
 

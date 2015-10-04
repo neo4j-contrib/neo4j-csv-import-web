@@ -11,21 +11,8 @@ var express = require('express'),
     CypherBuilder = require('./lib/buildCypher'),
     expressValidator = require('express-validator'),
     RedisStore = require('connect-redis')(session),
-    config = require('./lib/config');
-
-
-
-// FIXME: move to helpers lib
-// http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-      s4() + '-' + s4() + s4() + s4();
-}
+    config = require('./lib/config'),
+    guid = require('./lib/util').guid;
 
 // FIXME: move hbs helpers to separate module
 // Handlebars helpers
