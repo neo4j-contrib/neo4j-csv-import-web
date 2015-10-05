@@ -648,9 +648,15 @@
                 if ($(e.target).is(':checked')) {
                     property['primaryKey'] = true;
                     $('#' + guid + '-' + field + '-index').prop('checked', $(e.target).is(':checked'));
+                    $('.pkcheckbox[data-guid="' + guid + '"]').prop("disabled", true);
+                    $(e.target).prop("disabled", false);
+
                 } else {
                     property['primaryKey'] = false;
+                    $('.pkcheckbox[data-guid="' + guid + '"]').prop("disabled", false);
                 }
+
+
 
                 console.log(configData);
 
