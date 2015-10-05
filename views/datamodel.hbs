@@ -873,7 +873,7 @@
                     row += '<td>' + '<label><input class="renameLabel" data-guid="' + guid + '" data-field="' + field + '" type="text" name="' + guid + '-' + field + '-rename"></label> </td>';
                     row += '<td>' + '<label><input class="skipCheckBox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" name="' + guid + '-' + field + '-skip"></label> </td>';
                     row += '<td>' + '<label><input class="pkcheckbox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" name="' + guid + '-' + field + '-pk"></label> </td>';
-                    row += '<td><label><select><option value="---">---</option></select> </label></td>';
+                    row += '<td><label><select data-guid="' + guid + '" data-field="' + field + '" class="datatypeselect"><option value="string">string</option><option value="integer">integer</option><option value="float">float</option></select> </label></td>';
 
                     row += '<td>' + '<label><input class="indexCheckbox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" id="' + guid + '-' + field + '-index" name="' + guid + '-' + field + '-index"></label> </td>';
                     row += '<td><button type="button" class="btn btn-sm">---</button>';
