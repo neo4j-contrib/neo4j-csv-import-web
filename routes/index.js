@@ -4,7 +4,9 @@ var express = require('express'),
     neo4j = require('neo4j'),
     CypherBuilder = require('../lib/buildCypher'),
     babyparse = require("babyparse"),
-    guidShort = require('../lib/util').guidShort;
+    guidShort = require('../lib/util').guidShort,               // FIXME: better util module naming / import
+    config = require('../lib/config');
+
 
 // hold all data in memory to be served up for LOAD CSV
 // FIXME: find a better way to persist this data
@@ -180,7 +182,7 @@ router.get('/files/:uidparam/:filename', function(req, res, next) {
 });
 
 router.get('/import', function(req, res, next) {
-  var protocol = 'http://'; // other protocols?
+  var protocol = config.csv_file_protocol;
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData, protocol +req.headers.host, req.sessionID);
   var cypher = cypherBuilder.buildCypher();
   var csvCypher = cypherBuilder.buildCSVCypher();
