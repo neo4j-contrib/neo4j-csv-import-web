@@ -113,7 +113,11 @@
                                                 <td><label><input class="renameLabel" data-guid="{{../guid}}" data-field="{{headerKey}}" type="text" name="{{../guid}}-{{headerKey}}-rename"></label></td>
                                                 <td><label><input class="skipCheckBox"data-guid="{{../guid}}" data-field="{{headerKey}}" type="checkbox" name="{{../guid}}-{{headerKey}}-skip"></label></td>
                                                 <td><label><input type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" class="pkcheckbox" name="{{../guid}}-{{headerKey}}-pk"></label></td>
-                                                <td><label><select><option value="---">---</option></select></label></td>
+                                                <td><label><select data-guid="{{../guid}}" data-field="{{headerKey}}" class="datatypeselect">
+                                                    <option value="string">string</option>
+                                                    <option value="integer">integer</option>
+                                                    <option value="float">float</option>
+                                                </select></label></td>
                                                 <td><label><input class="indexCheckbox" type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" id="{{../guid}}-{{headerKey}}-index" name="{{../guid}}-{{headerKey}}-index"></label></td>
                                                 <td><button type="button" class="btn btn-sm">---</button></td>
                                             </tr>
@@ -656,6 +660,19 @@
 
 
             // TODO: Datatype dropdown handler
+            $('.datatypeselect').unbind().change(function(e){
+                var guid = $(e.target).data("guid");
+                var field = $(e.target).data("field");
+
+                var node = _.find(configData.nodes, {guid: guid});
+                var property = _.find(node.properties, {headerKey: field});
+
+                property['dataType'] = $(e.target).val();
+                console.log(configData);
+            });
+
+
+
             // TODO: Create index handler
             $('.indexCheckbox').unbind().change(function(e){
                 var guid = $(e.target).data("guid");
