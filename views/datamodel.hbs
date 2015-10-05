@@ -131,7 +131,7 @@
             <div role="tabpanel active" class="tab-pane" id="relsTab">
                 <div class="row">
                     <div class="col-sm-10">
-                        <ul class="nav nav-tabs col-sm-8" role="tablist">
+                        <ul class="nav nav-tabs col-sm-8" role="tablist" id="relTablist">
 
                             {{# each config.relationships}}
                                 <li role="presentation" class="relTabListItem"><a href="#{{guid}}" aria-controls="{{guid}}" role="tab" data-toggle="tab" id="{{guid}}-tabAnchor">{{filename}}</a></li>
@@ -139,11 +139,11 @@
                         </ul>
                     </div>
                     <div class="col-sm-2">
-                        <button class="btn btn-default btn-xs" id="newRelationshipButton">New Relationship</button>
+                        <button class="btn btn-default btn-xs" id="newRelationshipButton" data-toggle="modal" data-target="#newRelModalFileSelect">New Relationship</button>
                     </div>
                 </div>
 
-                <div class="tab-content">
+                <div class="tab-content tab-content-rels">
                     {{# each config.relationships}}
                         <div role="tabpanel" class="tab-pane rel-tab-pane" id="{{guid}}">
                                 <form class="form-horizontal">
@@ -363,6 +363,40 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" id="fileForNewNodeSelectedButton" class="btn btn-primary" data-dismiss="modal">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New relationship modal -->
+<div class="modal fade" id="newRelModalFileSelect" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class=modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">
+                    Create New Relationship
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="newRelFileSelect">Choose file</label>
+                        <select id="newRelFileSelect">
+                            {{# each files}}
+                                <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="fileForNewRelSelectedButton" class="btn btn-primary" data-dismiss="modal">Create</button>
             </div>
         </div>
     </div>
@@ -753,7 +787,7 @@
 
             $('#fileForNewNodeSelectedButton').unbind().click(function(e) {
                 var filename = $('#newNodeFileSelect').val();
-                console.log("added a new node for file: " + filename);
+                console.log("adding a new node for file: " + filename);
                 var newNode = {};
                 newNode['guid'] = guidShort();
                 var guid = newNode['guid'];
@@ -844,6 +878,148 @@
 
 
             });
+
+            $('#fileForNewRelSelectedButton').unbind().click(function(e) {
+                var filename = $('#newRelFileSelect').val();
+                console.log("adding a new rel for file: " + filename);
+                var newRel = {};
+                newRel['guid'] = guidShort();
+                var guid = newRel['guid'];
+                newRel['filename'] = filename;
+
+                configData.relationships.push(newRel);
+                console.log(configData);
+
+                updateNetworkViz();
+
+                $('#relTablist').append($('<li></li>')
+                        .attr("role", "presentation")
+                        .attr("class", "relTabListItem")
+                        .append($('<a></a>')
+                            .attr("href", "#"+guid)
+                            .attr("aria-controls", guid)
+                            .attr("role", "tab")
+                            .attr("data-toggle", "tab")
+                            .attr("id", guid + "-tabAnchor")
+                            .text(filename)));
+
+                var newRelPanel =   '<div role="tabpanel" class="tab-pane rel-tab-pane" id="' + guid + '">';
+                newRelPanel +=          '<form class="form-horizontal">';
+                newRelPanel +=              '<div class="row col-sm-12">';
+
+                // FROM
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid + '-fromLabelSelect" class="col-sm-4 control-label">From - Label</label>';
+                newRelPanel +=                      '<div class="col-sm-8">';
+                newRelPanel +=                          '<select class="form-control labelSelect fromLabelSelect" id="' + guid + '-fromLabelSelect" data-guid="' + guid +'">';
+
+                var allLabels = getAllLabels();
+
+                _.forEach(allLabels, function(label) {
+                    newRelPanel +=                          '<option value="' + label +'">' + label + '</option>';
+                });
+                newRelPanel +=                          '</select>';
+                newRelPanel +=                      '</div>'; // ./.col-sm-8
+                newRelPanel +=                  '</div>'; // ./form-group
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid +'-fromNeoKeySelect" class="col-sm-4 control-label">From - neoKey</label>';
+                newRelPanel +=                      '<div class="col-sm-8">';
+                newRelPanel +=                          '<select class="form-control" id="' + guid +'-fromNeoKeySelect" data-guid="' + guid +'">';
+
+                _.forEach(neoKeysForLabel(_.first(allLabels)), function(key) {
+                    newRelPanel +=                          '<option value="' + key + '">' + key + '</option>';
+                    console.log("Adding OPTION" + key);
+                });
+
+                newRelPanel +=                          '</select>';
+                newRelPanel +=                      '</div>';
+                newRelPanel +=                  '</div>';
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid +'-fromHeaderKeySelect" class="col-sm-4 control-label">From - headerKey</label>';
+                newRelPanel +=                      '<div class="col-sm-8">';
+                newRelPanel +=                          '<select class="form-control" id="' + guid +'-fromHeaderKeySelect" data-guid="' + guid +'">';
+
+                _.forEach(neoKeysForLabel(_.first(allLabels)), function(key) {
+                    newRelPanel +=                          '<option value="' + key + '">' + key + '</option>';
+                });
+
+                newRelPanel +=                          '</select>';
+                newRelPanel +=                      '</div>';
+                newRelPanel +=                  '</div>';
+
+                // TO
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid + '-toLabelSelect" class="col-sm-4 control-label">To - Label</label>';
+                newRelPanel +=                      '<div class="col-sm-8">';
+                newRelPanel +=                          '<select class="form-control labelSelect toLabelSelect" id="' + guid + '-toLabelSelect" data-guid="' + guid +'">';
+
+                _.forEach(allLabels, function(label) {
+                    newRelPanel +=                          '<option value="' + label +'">' + label + '</option>';
+                });
+                newRelPanel +=                          '</select>';
+                newRelPanel +=                      '</div>'; // ./.col-sm-8
+                newRelPanel +=                  '</div>'; // ./form-group
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid +'-toNeoKeySelect" class="col-sm-4 control-label">To - neoKey</label>';
+                newRelPanel +=                      '<div class="col-sm-8">';
+                newRelPanel +=                          '<select class="form-control" id="' + guid +'-toNeoKeySelect" data-guid="' + guid +'">';
+
+                _.forEach(neoKeysForLabel(_.first(allLabels)), function(key) {
+                    newRelPanel +=                          '<option value="' + key + '">' + key + '</option>';
+                });
+
+                newRelPanel +=                          '</select>';
+                newRelPanel +=                      '</div>';
+                newRelPanel +=                  '</div>';
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid +'-toHeaderKeySelect" class="col-sm-4 control-label">To - headerKey</label>';
+                newRelPanel +=                      '<div class="col-sm-8">';
+                newRelPanel +=                          '<select class="form-control" id="' + guid +'-toHeaderKeySelect" data-guid="' + guid +'">';
+
+                _.forEach(neoKeysForLabel(_.first(allLabels)), function(key) {
+                    newRelPanel +=                          '<option value="' + key + '">' + key + '</option>';
+                });
+
+                newRelPanel +=                          '</select>';
+                newRelPanel +=                      '</div>';
+                newRelPanel +=                  '</div>';
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid + '-nameInput" class="col-sm-2 control-label">Relationship name</label>';
+                newRelPanel +=                  '<div class="col-sm-10">';
+                newRelPanel +=                     '<input type="text" class="form-control" id="' + guid + '-nameInput" data-guid="' + guid + '" placeholder="SERVES_ON">';
+                newRelPanel +=                  '</div>';
+                newRelPanel +=                  '</div>';
+
+                newRelPanel +=                  '<input type="hidden" id="' + guid + '-filenameInput" data-guid="' + guid + '" value="' + filename +'">';
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<div class="col-sm-offset-2 col-sm-10">';
+                newRelPanel +=                          '<button type="submit" class="btn btn-default config-rel-button" data-guid="' + guid +'">Add Relationship</button>';
+                newRelPanel +=                      '</div>';
+                newRelPanel +=                  '</div>';
+
+
+                newRelPanel +=              '</div> <!-- ./row.col-sm-12 -->';
+                newRelPanel +=          '</form>';
+                newRelPanel +=       '</div> <!-- ./tabpanel -->';
+
+                $('.tab-content-rels').append($(newRelPanel));
+
+                updateUIListeners();
+
+
+
+
+            });
+
+
         }
 
 
