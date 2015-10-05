@@ -619,8 +619,6 @@
                 console.log(configData);
             });
 
-            // TODO: include checkbox handler
-
             $('.skipCheckBox').unbind().change(function(e){
                 var guid = $(e.target).data("guid");
                 var field = $(e.target).data("field");
@@ -637,7 +635,8 @@
                 console.log(configData);
 
             });
-            // TODO: PK checkbox handler
+
+
             $('.pkcheckbox').unbind().change(function(e){
                 var guid = $(e.target).data("guid");
                 console.log(guid);
@@ -653,13 +652,10 @@
                     property['primaryKey'] = false;
                 }
 
-                // TODO: toggle index for this property automatically
                 console.log(configData);
 
             });
 
-
-            // TODO: Datatype dropdown handler
             $('.datatypeselect').unbind().change(function(e){
                 var guid = $(e.target).data("guid");
                 var field = $(e.target).data("field");
@@ -671,8 +667,6 @@
                 console.log(configData);
             });
 
-
-
             // TODO: Create index handler
             $('.indexCheckbox').unbind().change(function(e){
                 var guid = $(e.target).data("guid");
@@ -681,7 +675,7 @@
                 var node = _.find(configData.nodes, {guid: guid});
                 var property = _.find(node.properties, {headerKey: field});
 
-                if ($(e.target).is(':checked')) {
+                if ($(e.target).is(':checked') && !$('#' + guid + '-' + field + 'pk').is(":checked")) {
                     property['index'] = true;
                 } else {
                     property['index'] = false;
