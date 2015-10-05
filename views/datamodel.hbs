@@ -114,7 +114,7 @@
                                                 <td><label><input class="skipCheckBox"data-guid="{{../guid}}" data-field="{{headerKey}}" type="checkbox" name="{{../guid}}-{{headerKey}}-skip"></label></td>
                                                 <td><label><input type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" class="pkcheckbox" name="{{../guid}}-{{headerKey}}-pk"></label></td>
                                                 <td><label><select><option value="---">---</option></select></label></td>
-                                                <td><label><input class="indexCheckbox" type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" name="{{../guid}}-{{headerKey}}-index"></label></td>
+                                                <td><label><input class="indexCheckbox" type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" id="{{../guid}}-{{headerKey}}-index" name="{{../guid}}-{{headerKey}}-index"></label></td>
                                                 <td><button type="button" class="btn btn-sm">---</button></td>
                                             </tr>
                                         {{/each}}
@@ -644,6 +644,7 @@
 
                 if ($(e.target).is(':checked')) {
                     property['primaryKey'] = true;
+                    $('#' + guid + '-' + field + '-index').prop('checked', $(e.target).is(':checked'));
                 } else {
                     property['primaryKey'] = false;
                 }
@@ -656,7 +657,7 @@
 
             // TODO: Datatype dropdown handler
             // TODO: Create index handler
-            $('.indexcheckbox').unbind().change(function(e){
+            $('.indexCheckbox').unbind().change(function(e){
                 var guid = $(e.target).data("guid");
                 var field = $(e.target).data("field");
 
@@ -857,7 +858,7 @@
                     row += '<td>' + '<label><input class="pkcheckbox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" name="' + guid + '-' + field + '-pk"></label> </td>';
                     row += '<td><label><select><option value="---">---</option></select> </label></td>';
 
-                    row += '<td>' + '<label><input class="indexCheckbox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" name="' + guid + '-' + field + '-index"></label> </td>';
+                    row += '<td>' + '<label><input class="indexCheckbox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" id="' + guid + '-' + field + '-index" name="' + guid + '-' + field + '-index"></label> </td>';
                     row += '<td><button type="button" class="btn btn-sm">---</button>';
 
                     row += '</tr>';
