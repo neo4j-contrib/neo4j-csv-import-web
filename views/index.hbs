@@ -1,4 +1,5 @@
 <script src="js/papaparse.min.js"></script>
+<link rel="stylesheet" href="stylesheets/spinner.css" type="text/css">
 
 <div class="alert alert-info alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -6,6 +7,11 @@
 </div>
 
 <h1>Select file(s)</h1>
+<div class="row">
+    <div class="col-sm-2" id="spinnerDiv">
+
+    </div>
+</div>
 
 <input type="file" id="csv-file" name="files" multiple/>
 
@@ -16,6 +22,8 @@
 
     function handleFileSelect(evt) {
         var file = evt.target.files[0];
+
+        $('#spinnerDiv').append($('<div class="spinner-loader">Loading…</div>'));
 
         $('#csv-file').parse({
             config: {
