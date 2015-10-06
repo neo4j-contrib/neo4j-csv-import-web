@@ -9,6 +9,8 @@ A web tool to make importing csv files into Neo4j super easy.
 
 `neo4j-csv-import-web` is running on Heroku at [https://neo4j-csv-import.herokuapp.com/](https://neo4j-csv-import.herokuapp.com/)
 
+![](https://dl.dropboxusercontent.com/u/67572426/csvimport.gif)
+
 ## Dependencies
 
 `neo4j-csv-import-web` is a node.js web application, therefore node.js (and npm, the node package manager which is bundled with node) is required. Installation instructions are available [here](http://nodejs.org)
