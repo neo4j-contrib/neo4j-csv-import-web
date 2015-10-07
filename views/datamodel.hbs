@@ -101,7 +101,7 @@
                                         <tr>
                                             <th>Column</th>
                                             <th>Rename</th>
-                                            <th>Skip <button type="button" class="btn btn-default btn-xs" id="toggleSkipButton">Toggle All</button></th>
+                                            <th>Skip <button type="button" class="btn btn-default btn-xs toggleSkipButton" data-guid="{{guid}}">Toggle All</button></th>
                                             <th>PK</th>
                                             <th>Datatype</th>
                                             <th>Create Index</th>
@@ -755,10 +755,16 @@
             });
 
 
-            $('#toggleSkipButton').unbind().click(function(e){
-                $("input[type='checkbox']:visible.skipCheckBox").prop("checked", function( i, val ) {
-                    return !val;
-                }).change();
+            $('.toggleSkipButton').unbind().click(function(e){
+                var guid = $(e.target).data("guid");
+                console.log("Toggle clicked: " + guid);
+
+                $(".skipCheckBox").filter(function() {
+                    return $(this).data("guid") == guid;
+                })
+                        .prop("checked", function( i, val ) {
+                            return !val;
+                        }).change();
             });
 
             $('.config-rel-button').unbind().click(function(e){
@@ -879,7 +885,7 @@
 
                 newNodePanel +=             '<table class="table">';
                 newNodePanel +=                 '<tbody>';
-                newNodePanel +=                     '<tr><th>Column</th><th>Rename</th><th>Skip <button type="button" class="btn btn-default btn-xs" id="toggleSkipButton">Toggle All</button></th><th>PK</th><th>Datatype</th><th>Create Index</th></tr>'; // Remove FK row
+                newNodePanel +=                     '<tr><th>Column</th><th>Rename</th><th>Skip <button type="button" class="btn btn-default btn-xs toggleSkipButton" data-guid="' + guid + '">Toggle All</button></th><th>PK</th><th>Datatype</th><th>Create Index</th></tr>'; // Remove FK row
 
                 _.forEach(properties, function(field) {
                     var row = '<tr>';
