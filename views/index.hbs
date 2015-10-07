@@ -1,19 +1,37 @@
 <script src="js/papaparse.min.js"></script>
 <link rel="stylesheet" href="stylesheets/spinner.css" type="text/css">
 
-<div class="alert alert-info alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Select your CSV files for upload. This tool will parse your files and guide you through the process of defining a property graph data model and import your data into Neo4j.
-</div>
+<div class="jumbotron">
+    <div class="container">
+        <h1>Neo4j-csv-import</h1>
+        <div class="row">
+        <div class="col-xs-6">
+            <h2>Select file(s) to get started</h2>
+            <p>Select your CSV files for upload. This tool will parse your files and guide you through the process of defining a property graph data model and import your data into Neo4j.</p>
+            <div class="row">
+                <div class="col-sm-2" id="spinnerDiv">
 
-<h1>Select file(s)</h1>
-<div class="row">
-    <div class="col-sm-2" id="spinnerDiv">
+                </div>
+            </div>
+            <input type="file" id="csv-file" name="files" multiple/>
+        </div>
+        <div class="col-xs-6">
+            <h2><small>Easily import your csv files into Neo4j.</small></h2>
+            <ol>
+                <li>Select files for upload</li>
+                <li>Configure data model with visual tool</li>
+                <li>Run automatically generated import scripts against Neo4j instance</li>
+            </ol>
+            <p>All from this web app!</p>
+        </div>
+        </div>
+
 
     </div>
 </div>
 
-<input type="file" id="csv-file" name="files" multiple/>
+<div class="container">
+    <div class="starter-template">
 
 <div class="row">
     <div class="col-sm-10 col-sm-offset-1">
@@ -72,4 +90,4 @@
     $(document).ready(function(){
         $("#csv-file").change(handleFileSelect);
     })
-</script>
+</script></div></div>

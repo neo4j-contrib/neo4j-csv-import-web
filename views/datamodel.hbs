@@ -1,4 +1,6 @@
-<style type="text/css">
+<div class="container">
+    <div class="starter-template">
+        <style type="text/css">
     #networkViz {
         width: 400px;
         height: 400px;
@@ -6,9 +8,33 @@
     }
 </style>
 
-<div class="alert alert-info alert-dismissible" role="alert">
+<div class="alert alert-info alert-dismissible text-left" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Now we're ready to configure the property graph data model. Step 1) Declare Label names for each Node. Step 2) Select which column defines the primary key for each Node. Optionally, rename or skip any columns. Step 3) Create relationships with the "Create New" button. When your data model is defined, click the Next button to begin import to Neo4j.
+    <p class="lead">Now we're ready to configure the property graph data model.</p>
+
+    <div class="row">
+        <div class="col-xs-9 col-md-6">
+            <p><h4>Nodes tab</h4></p>
+            <ol>
+                <li>Declare Label names for each Node.</li>
+                <li>Select which column defines the primary key for each Node. Optionally, rename or skip any columns.</li>
+                <li>Create additional Nodes with the "New Node" button.</li>
+            </ol>
+        </div>
+
+        <div class="col-xs-9 col-md-6">
+            <p></p><h4>Relationships tab</h4></p>
+            <ol>
+                <li>Choose the From/To Labels and keys</li>
+                <li>Enter the relationship name</li>
+                <li>Click "Add Relationship"</li>
+                <li>Create additional Relationships with the "New Relationship" button</li>
+            </ol>
+        </div>
+    </div>
+
+
+    <p>Once your datamodel is fully defined clikc the "Import >>" button to move on to the data import step.</p>
 </div>
 
 <div class="row">
@@ -1220,3 +1246,4 @@
 </script>
 
 <script src="/js/util.js"></script>
+        </div></div>
