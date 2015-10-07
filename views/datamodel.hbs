@@ -111,7 +111,7 @@
                                             <tr>
                                                 <td>{{headerKey}}</td>
                                                 <td><label><input class="renameLabel" data-guid="{{../guid}}" data-field="{{headerKey}}" type="text" name="{{../guid}}-{{headerKey}}-rename"></label></td>
-                                                <td><label><input class="skipCheckBox"data-guid="{{../guid}}" data-field="{{headerKey}}" type="checkbox" name="{{../guid}}-{{headerKey}}-skip"></label></td>
+                                                <td><label><input class="skipCheckBox" data-guid="{{../guid}}" data-field="{{headerKey}}" type="checkbox" name="{{../guid}}-{{headerKey}}-skip"></label></td>
                                                 <td><label><input type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" class="pkcheckbox" name="{{../guid}}-{{headerKey}}-pk"></label></td>
                                                 <td><label><select data-guid="{{../guid}}" data-field="{{headerKey}}" class="datatypeselect">
                                                     <option value="string">string</option>
@@ -742,9 +742,9 @@
 
 
             $('#toggleSkipButton').unbind().click(function(e){
-                $("input[type='checkbox']:visible.skipCheckBox").prop( "checked", function( i, val ) {
+                $("input[type='checkbox']:visible.skipCheckBox").prop("checked", function( i, val ) {
                     return !val;
-                });
+                }).change();
             });
 
             $('.config-rel-button').unbind().click(function(e){
