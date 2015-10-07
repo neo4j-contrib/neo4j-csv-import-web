@@ -111,7 +111,7 @@ if (config.redis_url === '') {
     }));
 
     console.log("using Redis session store");
-    console.log(config.redis_url);
+    //console.log(config.redis_url);
 }
 
 // Routes here

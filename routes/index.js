@@ -93,80 +93,15 @@ router.get('/datamodel', function(req, res, next) {
   var context = {};
   context = fileData; // array of file names
   context['config'] = configData;
-  console.dir(context);
   res.render('datamodel', context);
 });
 
 router.post('/datamodel', function(req, res, next) {
   var configData = req.body;
-  //var formData = req.body,
-  //    configData = req.session.configData,
-  //    fileData = req.session.fileData,
-  //    nodesConfig = [];
-  //
-  //
-  //console.dir(formData);
-  //console.dir(configData);
-  //console.dir(fileData);
-  //
-  //var labelsArray = ["Node"]; // FIXME: temporary placeholder for labels
-  //
-  //_.forEach(fileData.files, function(filename) {
-  //  var nodeConfig = _.filter(configData.nodes, {'filename': filename})[0];
-  //  console.dir(nodeConfig);
-  //  // create labels array, add labels: ["NODE"]
-  //  // get all fields for this filename
-  //  // for each field
-  //  // if field is included
-  //  // create obj
-  //  // headerKey, neoKey, dataType, index, primaryKey, foreignKey
-  //  // append to properties array
-  //  // properties: [{headerKey, neoKey, dataType, index, primaryKey, foreignKey}]
-  //
-  //  var fields = fileData[filename]['meta']['fields'],
-  //      properties = [];
-  //
-  //
-  //  _.forEach(fields, function(field, i) {
-  //    if (formData[filename+'-'+field+'-include'] === 'on') {
-  //      var propertyObj = {};
-  //      propertyObj['headerKey'] = field;
-  //      propertyObj['neoKey'] = formData[filename + '-' + field + '-rename'] || field;
-  //
-  //      propertyObj['dataType'] = 'string'; // FIXME: get data type
-  //      if (formData[filename + '-' + field + '-index'] === 'on') {
-  //        propertyObj['index'] = true;
-  //      } else {
-  //        propertyObj['index'] = false;
-  //      }
-  //
-  //      if (formData[filename + '-' + field + '-pk'] === "on") {
-  //        propertyObj['primaryKey'] = true;
-  //      } else {
-  //        propertyObj['primaryKey'] = false;
-  //      }
-  //
-  //      propertyObj['foreignKey'] = false; // FIXME: not implemented
-  //
-  //      properties.push(propertyObj);
-  //    }
-  //
-  //  });
-  //
-  //  var strippedFilename = filename.split('.').join(""); // FIXME: better consistency with naming here
-  //  nodeConfig['labels'] = [formData[strippedFilename+'LabelInput']];
-  //  nodeConfig['properties'] = properties;
-  //  nodesConfig.push(nodeConfig);
-  //
-  //
-  //});
-  //configData.nodes = nodesConfig;
   req.session.configData = configData;
   req.session.save();
-  console.dir(configData);
 
   res.send("OK");
-  //res.redirect('/import');
 
 });
 
@@ -217,30 +152,25 @@ router.post('/importNeo4jInstance', function(req, res, next) {
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData);
 
   var statements = cypherBuilder.buildCSVCypher().split(";");
-  //var cypher = cypherBuilder.getTestCypher(); // FIXME: don't use test cypher
-  //console.log(cypher);
 
   var queryObjs = [];
 
   _.forEach(statements, function(cypher) {
-    console.log(cypher);
+
     var obj = {};
     obj['query'] = cypher;
     if (cypher.length > 1) {
       queryObjs.push(obj);
-      console.log(queryObjs);
     }
   });
 
   db.cypher({queries: queryObjs}, function(err, results) {
-    console.log(results);
     if (err) {
       console.log(err);
       //throw err;
       res.send(err);
       //return next(err);
     } else {
-      console.log(results);
       res.send(results);
     }
 
@@ -258,8 +188,6 @@ router.post('/load', function(req, res, next) {
   req.session.save();
   allFiles[req.sessionID] = req.body;
   //allFiles = req.body;
-  console.dir(req.session);
-  //console.log(req.session.fileData);
   res.send('OK');
 
 });
@@ -274,7 +202,6 @@ router.get('/load2', function(req, res, next) {
 
 router.post('/load2', function(req, res, next) {
   var formData = req.body;
-  console.dir(formData);
 
   req.session.configData = parseLoadData(formData, req.session.fileData);
   req.session.save();
@@ -285,8 +212,6 @@ router.post('/load2', function(req, res, next) {
 
 router.get('/preview/:filename', function(req, res, next) {
   var filename = req.params.filename;
-  //console.log(req.session);
-  // TODO: process form data into something easier to work with
   var previewData = req.session.fileData[filename];
   previewData['filename'] = filename;
   res.render('preview', previewData)
