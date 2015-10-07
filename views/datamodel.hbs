@@ -697,15 +697,29 @@
                 // TODO: validate configuration object at this point
                 e.preventDefault();
 
-                $.ajax({
-                    type: 'POST',
-                    data: JSON.stringify(configData),
-                    contentType: 'application/json',
-                    url: '/datamodel',
-                    success: function(data) {
-                        window.location.href = '/import';
-                    }
-                })
+                // check for PK
+                var numNodes = configData.nodes.length;
+
+                var numPKs = $('.pkcheckbox:checked').length;
+                var numLabels = $(".labelInput").filter(function(){ return this.value != "";}).length;
+                console.log("numLabels " + numLabels);
+
+                if (numNodes != numPKs) {
+                    alert("Please select a Primary Key for each Node.");
+                } else if (numNodes != numLabels) {
+                    alert("Please enter a Label for each Node.");
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        data: JSON.stringify(configData),
+                        contentType: 'application/json',
+                        url: '/datamodel',
+                        success: function(data) {
+                            window.location.href = '/import';
+                        }
+                    })
+                }
+
             });
 
             $('.fromLabelSelect').unbind().change(function(e){
