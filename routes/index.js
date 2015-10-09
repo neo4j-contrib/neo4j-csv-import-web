@@ -90,9 +90,27 @@ router.get('/datamodel', function(req, res, next) {
   var fileData = req.session.fileData,
       configData = req.session.configData;
 
+  // don't send full file data - only need fields for each file (outside of configDat)
+
+  var fileFields = {};
+
+  _.forEach(fileData, function(v,k) {
+    //console.log("Key: " + k);
+    //console.log("Value: " + v);
+
+    if (v && v.meta && v.meta.fields) {
+      fileFields[k] = v.meta.fields;
+    }
+
+  });
+
+  //console.log(JSON.stringify(fileFields, null, 4));
+
   var context = {};
-  context = fileData; // array of file names
+  //context = fileData; // array of file names
+  context['files'] = fileData.files;
   context['config'] = configData;
+  context['fileFields'] = fileFields;
   res.render('datamodel', context);
 });
 
