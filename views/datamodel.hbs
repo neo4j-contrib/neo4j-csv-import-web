@@ -217,7 +217,34 @@
 
 
                                 </div>
+
+
                             </form>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th>Column</th>
+                                        <th>Rename</th>
+                                        <th>Skip <button type="button" class="btn btn-default btn-xs toggleSkipButton" data-guid="{{guid}}">Toggle All</button></th>
+                                        <th>Datatype</th>
+                                    </tr>
+                                {{# each properties}}
+                                    <tr>
+                                        <td>{{headerKey}}</td>
+                                        <td><label><input class="renameLabel" data-guid="{{../guid}}" data-field="{{headerKey}}" type="text" name="{{../guid}}-{{headerKey}}-rename"</label></td>
+                                        <td><label><input class="skipCheckBox" data-guid="{{../guid}}" data-field="{{headerKey}}" type="checkbox" name="{{../guid}}-{{headerKey}}-skip" checked></label></td>
+                                        <td><label><select data-guid="{{../guid}}" data-field="{{headerKey}}" class="datatypeselect">
+                                            <option value="string">string</option>
+                                            <option value="integer">integer</option>
+                                            <option value="float">float</option>
+                                        </select></label></td>
+                                    </tr>
+                                {{/each}}
+
+
+                                </tbody>
+                            </table>
 
 
 
@@ -620,7 +647,7 @@
                 var guid = $(e.target).data("guid");
                 var field = $(e.target).data("field");
 
-                var node = _.find(configData.nodes, {guid: guid});
+                var node = _.find(_.union(configData.nodes, configData.relationships), {guid: guid});
                 var property = _.find(node.properties, {headerKey: field});
                 property['neoKey'] = $(e.target).val();
 
@@ -631,7 +658,11 @@
                 var guid = $(e.target).data("guid");
                 var field = $(e.target).data("field");
 
-                var node = _.find(configData.nodes, {guid: guid});
+                console.log("Guid: " + guid);
+                console.log("field: " + field);
+                console.log(_.union(configData.nodes, configData.relationships));
+
+                var node = _.find(_.union(configData.nodes, configData.relationships), {guid: guid});
                 var property = _.find(node.properties, {headerKey: field});
 
                 if ($(e.target).is(':checked')) {
@@ -674,7 +705,7 @@
                 var guid = $(e.target).data("guid");
                 var field = $(e.target).data("field");
 
-                var node = _.find(configData.nodes, {guid: guid});
+                var node = _.find(_.union(configData.nodes, configData.relationships), {guid: guid});
                 var property = _.find(node.properties, {headerKey: field});
 
                 property['dataType'] = $(e.target).val();
@@ -967,12 +998,25 @@
             });
 
             $('#fileForNewRelSelectedButton').unbind().click(function(e) {
+
+                //TODO: add markup for relationships and add properties for each field in filename
+
                 var filename = $('#newRelFileSelect').val();
+                var fields = fieldsForRelationshipFile(filename);
                 console.log("adding a new rel for file: " + filename);
                 var newRel = {};
                 newRel['guid'] = guidShort();
                 var guid = newRel['guid'];
                 newRel['filename'] = filename;
+                newRel['properties'] = [];
+                _.forEach(fields, function(f) {
+                    var prop = {};
+                    prop['skip'] = true;
+                    prop['dataType'] = 'string';
+                    prop['neoKey'] = f;
+                    prop['headerKey'] = f;
+                    newRel['properties'].push(prop);
+                });
 
                 configData.relationships.push(newRel);
                 console.log(configData);
@@ -1053,6 +1097,35 @@
                 newRelPanel +=                  '<input type="hidden" id="' + guid + '-filenameInput" data-guid="' + guid + '" value="' + filename + '">';
                 newRelPanel +=              '</div>';
                 newRelPanel +=          '</form>';
+
+
+                newRelPanel +=          '<table class="table">';
+                newRelPanel +=              '<tbody>';
+                newRelPanel +=                  '<tr>';
+                newRelPanel +=                      '<th>Column</th>';
+                newRelPanel +=                      '<th>Rename</th>';
+                newRelPanel +=                      '<th>Skip <button type="button" class="btn btn-default btn-xs toggleSkipButton" data-guid="' + guid + '">Toggle All</button></th>';
+                newRelPanel +=                      '<th>Datatype</th>';
+                newRelPanel +=                  '</tr>';
+
+
+                _.forEach(fields, function(f) {
+
+                    newRelPanel +=              '<tr>';
+                    newRelPanel +=                  '<td>' + f + '</td>';
+                    newRelPanel +=                  '<td><label><input class="renameLabel" data-guid="' + guid + '" data-field="' + f +'" type="text" name="' + guid + '-' + f + '-rename"</label></td>';
+                    newRelPanel +=                  '<td><label><input class="skipCheckBox" data-guid="' + guid + '" data-field="' + f + '" type="checkbox" name="' + guid + '-' + f + '-skip" checked></label></td>';
+                    newRelPanel +=                  '<td><label><select data-guid="' + guid + '" data-field="' + f + '" class="datatypeselect">'
+                    newRelPanel +=                      '<option value="string">string</option>';
+                    newRelPanel +=                      '<option value="integer">integer</option>';
+                    newRelPanel +=                      '<option value="float">float</option>';
+                    newRelPanel +=                      '</select></label></td>';
+                    newRelPanel +=              '</tr>';
+                });
+
+                newRelPanel +=              '</tbody>';
+                newRelPanel +=          '</table>';
+
                 newRelPanel +=          '<div class="form-group">';
                 newRelPanel +=              '<div class="col-sm-offset-2 col-sm-10">';
                 newRelPanel +=                  '<button type="submit" class="btn btn-default config-rel-button" data-guid="' + guid + '">Add Relationship</button>';

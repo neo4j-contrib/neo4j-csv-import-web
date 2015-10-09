@@ -7,8 +7,8 @@ function guidShort() {
             .toString(16)
             .substring(1);
     }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
+    return "a" + s4() + s4() + s4() + s4() +
+        s4() + s4() + s4() + s4();
 }
 
 if (typeof exports === 'object') {

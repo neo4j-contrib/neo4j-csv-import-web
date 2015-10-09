@@ -61,6 +61,7 @@ function parseLoadData(formData, fileData) {
         properties['dataType'] = 'string';
         properties['primaryKey'] = false;
         properties['skip'] = false;
+        properties['index'] = false;
 
         node['properties'].push(properties);
       });
@@ -70,6 +71,18 @@ function parseLoadData(formData, fileData) {
       var rel = {};
       rel['filename'] = file;
       rel['guid'] = guidShort();
+      rel['properties'] = [];
+
+      _.forEach(fileData[file]['meta']['fields'], function(field) {
+        var properties = {};
+        properties['headerKey'] = field;
+        properties['neoKey'] = field;
+        properties['dataType'] = 'string';
+        properties['skip'] = true;
+
+        rel['properties'].push(properties);
+      });
+
       rels.push(rel);
     }
   });

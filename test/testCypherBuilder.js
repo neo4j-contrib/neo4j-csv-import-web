@@ -28,6 +28,7 @@ var nodeData = {
 var nodeConfig = {
     "filename": "legislators.csv",
     "labels": ["Legislator"],
+    "guid": "a9ed5a7d23be56398490429a175017e2",
     "properties": [
         {
             "headerKey": "thomasID",
@@ -83,6 +84,7 @@ var legislatorCommitteesConfigData = {
         {
             "filename": "legislators.csv",
             "labels": ["Legislator"],
+            "guid": "a9ed5a7d23be56398490429a175017f3",
             "properties": [
                 {
                     "headerKey": "thomasID",
@@ -133,6 +135,7 @@ var legislatorCommitteesConfigData = {
         {
             "filename": "committees.csv",
             "labels": ["Committee"],
+            "guid": "a9ed5a7d23be56398490429a175017g4",
             "properties": [
                 {
                     "headerKey": "thomasID",
@@ -185,6 +188,7 @@ var legislatorCommitteesConfigData = {
     "relationships": [
         {
             "filename": "committee-members.csv",
+            "guid": "a9ed5a7d23be56398490429a175017h5",
             "from": {
                 "filename": "legislators.csv",
                 "neoKey": "thomasID",
@@ -197,7 +201,27 @@ var legislatorCommitteesConfigData = {
                 "fileKey": "committeeID",
                 "label": "Committee"
             },
-            "name": "SERVES_ON"
+            "name": "SERVES_ON",
+            "properties": [
+                {
+                    "headerKey": "committeID",
+                    "neoKey": "committeeID",
+                    "dataType": "string",
+                    "skip": true
+                },
+                {
+                    "headerKey": "legislatorID",
+                    "neoKey": "legislatorID",
+                    "dataType": "string",
+                    "skip": true
+                },
+                {
+                    "headerKey": "rank",
+                    "neoKey": "rank",
+                    "dataType": "integer",
+                    "skip": false
+                }
+            ]
         }
     ]
 
