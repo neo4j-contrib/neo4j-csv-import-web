@@ -835,7 +835,8 @@
 
                 var fromLabel = $('#' + guid +'-fromLabelSelect').val();
 
-                var fromPK = getPKForLabel(fromLabel); // FIXME: not implemented
+                var fromPK = getPKForLabel(fromLabel);
+                var fromGuid = getGuidForLabel(fromLabel);
                 // TODO: fromKey will always be primaryKey (neoKey where primaryKey: true in nodeConfig)
                 // TODO: fromFileKey will be primaryKey (headerKey(?) where primaryKey: true in nodeConfig), unless overridden by key specified in fromHeaderKeySelect field
 
@@ -850,6 +851,7 @@
 
                 var toLabel = $('#' + guid + '-toLabelSelect').val();
                 var toPK = getPKForLabel(toLabel);
+                var toGuid = getGuidForLabel(toLabel);
                 // TODO: fromKey will always be primaryKey (neoKey where primaryKey: true in nodeConfig)
                 // TODO: fromFileKey will be primaryKey (headerKey(?) where primaryKey: true in nodeConfig), unless overridden by key specified in fromHeaderKeySelect field
 
@@ -879,11 +881,13 @@
                 fromObj['label'] = fromLabel;
                 fromObj['neoKey'] = fromKey;
                 fromObj['fileKey'] = fromFileKey;
+                fromObj['guid'] = fromGuid;
 
                 var toObj = {};
                 toObj['label'] = toLabel;
                 toObj['neoKey'] = toKey;
                 toObj['fileKey'] = toFileKey;
+                toObj['guid'] = toGuid;
 
                 newRel['from'] = fromObj;
                 newRel['to'] = toObj;
@@ -1173,6 +1177,11 @@
             var key = _.find(node.properties, {primaryKey: true});
 
             return key.neoKey;
+        }
+
+        function getGuidForLabel(label) {
+            var node = _.find(configData.nodes, {labels: [label]});
+            return node['guid'];
         }
 
         // TODO: get all neoKeys (for a given label)

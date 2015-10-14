@@ -150,11 +150,18 @@ router.get('/files/:uidparam/:filename', function(req, res, next) {
 router.get('/import', function(req, res, next) {
   var protocol = config.csv_file_protocol;
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData, protocol +req.headers.host, req.sessionID);
-  //var cypher = cypherBuilder.buildCypher();
+
+  var cypher = cypherBuilder.buildCypher();
   var csvCypher = cypherBuilder.buildCSVCypher();
   var cypherConstraints = cypherBuilder.cypherConstraints();
 
-  res.render('import', {loadCSVCypher: csvCypher, cypherConstraints: cypherConstraints});
+  if (cypher.split(/\r\n|\r|\n/).length < 5000) {
+    res.render('import', {loadCSVCypher: csvCypher, cypherConstraints: cypherConstraints, cypher: cypher});
+  } else {
+    res.render('import', {loadCSVCypher: csvCypher, cypherConstraints: cypherConstraints});
+  }
+
+
 });
 
 router.post('/importNeo4jInstance', function(req, res, next) {
