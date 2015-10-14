@@ -94,6 +94,17 @@ function parseLoadData(formData, fileData) {
   return datamodelConfig;
 }
 
+function countNodesAndRels(fileData) {
+  var count = 0;
+
+  _.forEach(fileData.files, function(f) {
+    count += fileData[f]['data'].length
+  });
+
+  console.log("Node + relationship count: " + count);
+  return count;
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
@@ -151,11 +162,12 @@ router.get('/import', function(req, res, next) {
   var protocol = config.csv_file_protocol;
   var cypherBuilder = new CypherBuilder(req.session.fileData, req.session.configData, protocol +req.headers.host, req.sessionID);
 
-  var cypher = cypherBuilder.buildCypher();
+
   var csvCypher = cypherBuilder.buildCSVCypher();
   var cypherConstraints = cypherBuilder.cypherConstraints();
 
-  if (cypher.split(/\r\n|\r|\n/).length < 5000) {
+  if (countNodesAndRels(req.session.fileData) < 1000) {
+    var cypher = cypherBuilder.buildCypher();
     res.render('import', {loadCSVCypher: csvCypher, cypherConstraints: cypherConstraints, cypher: cypher});
   } else {
     res.render('import', {loadCSVCypher: csvCypher, cypherConstraints: cypherConstraints});
