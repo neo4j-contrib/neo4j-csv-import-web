@@ -1,12 +1,6 @@
-<div class="container">
-    <div class="starter-template">
-        <div class="row">
-    <h2>{{filename}}</h2>
-
-    <table class="table">
-        <tbody>
-        {{{previewTable meta.fields data}}}
-        </tbody>
-    </table>
-</div>
-        </div></div>
+<h4>{{filename}} <small> preview</small></h4>
+<table class="table table-responsive" style="max-width:100%;">
+    <tbody>
+    {{{previewTable meta.fields data}}}
+    </tbody>
+</table>

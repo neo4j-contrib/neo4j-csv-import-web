@@ -264,6 +264,7 @@ router.get('/preview/:filename', function(req, res, next) {
   var filename = req.params.filename;
   var previewData = req.session.fileData[filename];
   previewData['filename'] = filename;
+  previewData['layout'] = null;
   res.render('preview', previewData)
 });
 

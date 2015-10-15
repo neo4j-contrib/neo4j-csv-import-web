@@ -1,3 +1,9 @@
+<style>
+    .popover{
+        max-width: 100%;
+    }
+</style>
+
 <div class="container">
     <div class="starter-template">
 
@@ -20,6 +26,7 @@
 <table class="table">
     <tbody>
         <tr>
+            <th>Preview</th>
             <th>Import</th>
             <th>Node <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Node" data-content="Each CSV file represents a Node, Relationship or both."></span></th>
             <th>Relationship</th>
@@ -28,11 +35,12 @@
             <th>File name</th>
             <th>Size</th>
             <th>Rows</th>
-            <th>Preview</th>
+
         </tr>
 
         {{#each files}}
         <tr>
+            <th><a href="#" data-toggle="popover" data-poload="/preview/{{this}}">Preview file</a></th>
             <th><label><input type="checkbox" name="{{this}}importCheck" checked></label></th>
             <th><label><input type="radio" name="{{this}}typeRadios" value="node" checked></label></th>
             <th><label><input type="radio" name="{{this}}typeRadios" value="relationship"></label></th>
@@ -41,7 +49,7 @@
             <th>{{this}}</th>
             <th>-</th>
             <th>-</th>
-            <th><a href="/preview/{{this}}">Preview file</a></th>
+
         </tr>
             <input type="hidden" name="file{{this}}" value="{{this}}">
         {{/each}}
@@ -58,10 +66,16 @@
     </form>
 
 <script>
-    $(function() {
-        $(function () {
-            $('[data-toggle="popover"]').popover()
-        })
-    });
+    $(function () {
+        $('[data-content]').popover();
+
+        $('[data-poload]').each(function(i,e){
+            var el = $(e);
+            $.get(el.data("poload"), function(d) {
+                el.popover({content: d, html: true, trigger: 'hover', placement: 'auto left'});
+            })
+        });
+    })
+
 </script>
         </div></div>
