@@ -40,18 +40,18 @@
 
         {{#each files}}
         <tr>
-            <th><a href="#" data-toggle="popover" data-poload="/preview/{{this}}">Preview file</a></th>
-            <th><label><input type="checkbox" name="{{this}}importCheck" checked></label></th>
-            <th><label><input type="radio" name="{{this}}typeRadios" value="node" checked></label></th>
-            <th><label><input type="radio" name="{{this}}typeRadios" value="relationship"></label></th>
-            <th><label><input type="radio" name="{{this}}typeRadios" value="unknown" disabled></label></th>
-            <th><label><input type="checkbox" name="{{this}}headersCheck" checked disabled></label></th>
-            <th>{{this}}</th>
+            <th><a href="#" data-toggle="popover" data-poload="/preview/{{name}}">Preview file</a></th>
+            <th><label><input type="checkbox" name="{{name}}importCheck" checked></label></th>
+            <th><label><input type="radio" name="{{name}}typeRadios" value="node" checked></label></th>
+            <th><label><input type="radio" name="{{name}}typeRadios" value="relationship"></label></th>
+            <th><label><input type="radio" name="{{name}}typeRadios" value="unknown" disabled></label></th>
+            <th><label><input type="checkbox" name="{{name}}headersCheck" checked disabled></label></th>
+            <th>{{name}}</th>
             <th>-</th>
-            <th>-</th>
+            <th>{{rows}}</th>
 
         </tr>
-            <input type="hidden" name="file{{this}}" value="{{this}}">
+            <input type="hidden" name="file{{name}}" value="{{name}}">
         {{/each}}
     </tbody>
 </table>

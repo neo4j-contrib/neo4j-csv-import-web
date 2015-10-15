@@ -245,7 +245,16 @@ router.post('/load', function(req, res, next) {
 router.get('/load2', function(req, res, next) {
   var fileData = req.session.fileData;
   var context = {};
-  context['files'] = fileData.files;
+  var fileInfo = [];
+  var files = fileData.files;
+  _.forEach(files, function(f) {
+    var fileObj = {};
+    fileObj['name'] = f;
+    fileObj['rows'] = req.session.fileData[f]['data'].length;
+    fileInfo.push(fileObj);
+  });
+
+  context['files'] = fileInfo;
   res.render('load2', context);
 
 });
