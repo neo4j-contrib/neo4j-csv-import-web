@@ -444,118 +444,16 @@
     var configData = JSON.parse('{{{stringify this.config}}}');
     var fileFields = JSON.parse('{{{stringify this.fileFields}}}');
     console.log(configData);
-    var network; // network viz
-
-    // iterate through all relationships and hide the filename-node-pane element for that file
-    // toggle the node button off
-    // toggle the relationship button on
-
-    // TODO: move into document.ready
-//    _.forEach(configData.relationships, function(relObject) {
-//       var filename = relObject.filename.split(".").join("");
-//        console.log(filename);
-//        $('#'+filename +'-datamodel-pane').remove();
-//        $('#'+filename + '-node-button').prop('disabled', true).removeClass("active");
-//        $('#'+filename + '-rel-button').prop('disabled', false).addClass("active");
-//        //$('#'+filename + '-nodePaneDiv').empty();
-//        $('#'+filename + '-rel-message').show();
-//
-//    });
 
     $(function() {
-        // set first tab as active
-        //$('.nav-tabs li').first().show();
-        //$('.nav-tabs li').first().addClass("active");
-        //$('.tab-pane').first().addClass("active");
 
         $('.nodeTabListItem').first().addClass("active");
         $('.relTabListItem').first().addClass("active");
         $('.node-tab-pane').first().addClass("active");
         $('.rel-tab-pane').first().addClass("active");
 
-//        $("ul.nav-tabs a").click(function (e) {
-//            e.preventDefault();
-//            $(this).tab('show');
-//        });
+        DatamodelViz.init();
 
-        function drawNetworkViz() {
-            var nodesArr = [];
-            $.each(configData.nodes, function(i, el){
-                console.log(el);
-                var name = '';
-                if (el.labels) {
-                    name = el.labels[0];
-                } else {
-                    name = el.filename || name;
-                }
-                nodesArr.push({id: i, label: name});
-            });
-
-            // FIXME: duplicated code
-            var edges = [];
-            $.each(configData.relationships, function(i, el) {
-                if (el.to && el.from) {
-                    console.log(el);
-                    var from = _.findIndex(configData.nodes, {labels: [el.from.label]});
-                    var to = _.findIndex(configData.nodes, {labels: [el.to.label]});
-
-                    var edge = {from: from, arrows: "to", to: to, label: el.name};
-                    edges.push(edge);
-                }
-
-            });
-
-            var container = document.getElementById('networkViz');
-            var data = {
-                nodes: new vis.DataSet(nodesArr),
-                config: {},
-                edges: new vis.DataSet(edges)
-            };
-            var options = {};
-
-            network = new vis.Network(container, data, options);
-
-            console.log("network drawn");
-        }
-
-        function updateNetworkViz() {
-            var nodesArr = [];
-            $.each(configData.nodes, function(i, el){
-                console.log(el);
-                var name = '';
-                if (el.labels) {
-                    name = el.labels[0];
-                } else {
-                    name = el.filename || name;
-                }
-                nodesArr.push({id: i, label: name});
-            });
-
-            var edges = [];
-            $.each(configData.relationships, function(i, el) {
-
-                if (el.from && el.to) {
-
-                    console.log(el);
-                    var from = _.findIndex(configData.nodes, {labels: [el.from.label]});
-                    var to = _.findIndex(configData.nodes, {labels: [el.to.label]});
-
-                    var edge = {from: from, arrows: "to", to: to, label: el.name};
-                    edges.push(edge);
-                }
-
-            });
-
-            //console.log(edges);
-
-            var data = {
-                nodes: new vis.DataSet(nodesArr),
-                config: {},
-                edges: new vis.DataSet(edges)
-            };
-
-            network.setData(data);
-        }
 
         function handleUpdateLabel(e) {
             // figure out which file the update belongs to
@@ -568,7 +466,7 @@
             console.log(configData);
 
             $('#' + guid + '-tabAnchor').html($(e.target).val());
-            drawNetworkViz();
+            DatamodelViz.updateNetworkViz();
             populateLabelSelects();
         }
 
@@ -638,7 +536,7 @@
                 console.log(configData);
 
                 drawRelationshipTable();
-                updateNetworkViz();
+                DatamodelViz.updateNetworkViz();
 
             });
 
@@ -651,7 +549,9 @@
                 var property = _.find(node.properties, {headerKey: field});
                 property['neoKey'] = $(e.target).val();
 
+                DatamodelViz.updateNetworkViz();
                 console.log(configData);
+
             });
 
             $('.skipCheckBox').unbind().change(function(e){
@@ -671,6 +571,7 @@
                     property['skip'] = false;
                 }
 
+                DatamodelViz.updateNetworkViz();
                 console.log(configData);
 
             });
@@ -695,8 +596,7 @@
                     $('.pkcheckbox[data-guid="' + guid + '"]').prop("disabled", false);
                 }
 
-
-
+                DatamodelViz.updateNetworkViz();
                 console.log(configData);
 
             });
@@ -761,17 +661,6 @@
 
             });
 
-//            $('.fromLabelSelect').unbind().change(function(e){
-//
-//                updateFromLabelSelects($(e.target));
-//
-//            });
-//
-//            $('.toLabelSelect').unbind().change(function(e){
-//                updateToLabelSelects($(e.target));
-//            });
-
-
             $('#modalToggleButton, #relationshipTabNav').unbind().click(function(e) {
                 console.log("dont' show the modal");
 
@@ -815,6 +704,7 @@
                         .prop("checked", function( i, val ) {
                             return !val;
                         }).change();
+                DatamodelViz.updateNetworkViz();
             });
 
             $('.config-rel-button').unbind().click(function(e){
@@ -901,7 +791,7 @@
                 console.log(configData);
 
                 drawRelationshipTable();
-                updateNetworkViz();
+                DatamodelViz.updateNetworkViz();
 
 
 
@@ -934,7 +824,7 @@
                 configData.nodes.push(newNode);
                 console.log(configData);
 
-                updateNetworkViz();
+                DatamodelViz.updateNetworkViz();
 
                 // FIXME: use some MVC framework that supports data binding!!!!
                 // update Nodes nav tabs with new filename
@@ -1025,7 +915,7 @@
                 configData.relationships.push(newRel);
                 console.log(configData);
 
-                updateNetworkViz();
+                DatamodelViz.updateNetworkViz();
 
                 $('#relTablist').append($('<li></li>')
                         .attr("role", "presentation")
@@ -1362,7 +1252,7 @@
 
         updateUIListeners();
         populateLabelSelects();
-        drawNetworkViz();
+        //DatamodelViz.initNetworkViz();
         drawRelationshipTable();  // FIXME: only skeleton of relationship object at load. dont' add row if missing properties
 
         $('[data-toggle="popover"]').popover();
@@ -1370,4 +1260,5 @@
 </script>
 
 <script src="/js/util.js"></script>
+        <script src="/js/datamodelviz.js"></script>
         </div></div>
