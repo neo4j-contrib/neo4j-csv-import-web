@@ -954,7 +954,7 @@
                 newRelPanel +=                          '<option value=""></option>';
                 var keys = fieldsForRelationshipFile(filename);
                 _.forEach(keys, function(k) {
-                    newRelPanel +=                      '<option value="' + k + '"></option>';
+                    newRelPanel +=                      '<option value="' + k + '">' + k + '</option>';
                 });
 
 
@@ -973,7 +973,7 @@
                 newRelPanel +=                          '<label for="' + guid + '-toLabelSelect">To</label>';
                 newRelPanel +=                          '<select class="form-control labelSelect toLabelSelect" id="' + guid + '-toLabelSelect" data-guid="' + guid + '">';
                 _.forEach(labels, function(l) {
-                    newRelPanel +=                          '<option>' + l + '</option>';
+                    newRelPanel +=                          '<option value="' + l + '">' + l + '</option>';
                 });
                 newRelPanel +=                          '</select>';
                 newRelPanel +=                      '</div>';
@@ -982,7 +982,7 @@
                 newRelPanel +=                      '<select class="form-control headerKeySelect" id="' + guid + '-toHeaderKeySelect" data-filename="' + filename + '" data-guid="' + guid + '">';
                 newRelPanel +=                          '<option value=""></option>';
                 _.forEach(keys, function(k) {
-                    newRelPanel +=                      '<option value="' + k + '"></option>';
+                    newRelPanel +=                      '<option value="' + k + '">' + k + '</option>';
                 });
                 newRelPanel +=                      '</select>';
                 newRelPanel +=                      '<p class="help-block">Optional</p>';
@@ -1255,7 +1255,7 @@
         //DatamodelViz.initNetworkViz();
         drawRelationshipTable();  // FIXME: only skeleton of relationship object at load. dont' add row if missing properties
 
-        $('[data-toggle="popover"]').popover();
+        $('[data-toggle="popover"]').popover({container: "body"});
     });
 </script>
 
