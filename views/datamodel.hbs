@@ -187,6 +187,16 @@
                     {{# each config.relationships}}
                         <div role="tabpanel" class="tab-pane rel-tab-pane" id="{{guid}}">
 
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">File</label>
+                                        <div class="col-sm-10">
+                                            <p class="form-control-static">{{filename}} <a href="#" data-toggle="popover" data-poload="/preview/{{filename}}"> Preview</a></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <form>
                                 <div class="row">
@@ -949,6 +959,18 @@
                             .text(filename)));
 
                 var newRelPanel =   '<div role="tabpanel" class="tab-pane rel-tab-pane" id="' + guid + '">';
+
+                newRelPanel +=      '<div class="row">';
+                newRelPanel +=          '<div class="col-xs-4">';
+                newRelPanel +=              '<div class="form-group">';
+                newRelPanel +=                  '<label class="col-sm-2 control-label">File</label>';
+                newRelPanel +=                  '<div class="col-sm-10">';
+                newRelPanel +=                      '<p class="form-control-static">' + filename + '<a href="#" data-toggle="popover" data-poload="/preview/' + filename + '"> Preview</a></p>';
+                newRelPanel +=                  '</div>';
+                newRelPanel +=              '</div>';
+                newRelPanel +=          '</div>';
+                newRelPanel +=      '</div>';
+
                 newRelPanel +=          '<form>';
                 newRelPanel +=              '<div class="row">';
                 newRelPanel +=                  '<h4 class="text-center">Create Relationship</h4>';
