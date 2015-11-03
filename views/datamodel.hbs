@@ -204,8 +204,15 @@
                                     <div class="col-xs-4">
                                         <div class="form-group">
                                             <label for="{{guid}}-fromLabelSelect">From</label>
-                                            <select class="form-control labelSelect fromLabelSelect" id="{{guid}}-fromLabelSelect" data-guid="{{guid}}"><option>Employee</option></select>
+                                            <select class="form-control labelSelect fromLabelSelect" id="{{guid}}-fromLabelSelect" data-guid="{{guid}}" data-direction="from"><option>Employee</option></select>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="{{guid}}-fromNeoKeySelect">From Label property <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Create relationship on property" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>
+                                            <select class="form-control neoKeySelect" data-guid="{{guid}}" data-filename="{{filename}}" id="{{guid}}-fromNeoKeySelect" data-direction="from"><option value=""></option></select>
+                                            <p class="help-block">Optional</p>
+                                        </div>
+
                                         <div class="form-group">
                                             <label for="{{guid}}-fromHeaderKeySelect">Field name in file <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Field name in file" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>
                                             <select class="form-control headerKeySelect" data-guid="{{guid}}" data-filename="{{filename}}" id="{{guid}}-fromHeaderKeySelect"><option value=""></option><option>EmployeeID</option></select>
@@ -225,8 +232,16 @@
                                     <div class="col-xs-4">
                                         <div class="form-group">
                                             <label for="{{guid}}-toLabelSelect">To</label>
-                                            <select class="form-control labelSelect toLabelSelect" id="{{guid}}-toLabelSelect" data-guid="{{guid}}"><option>Employee</option></select>
+                                            <select class="form-control labelSelect toLabelSelect" id="{{guid}}-toLabelSelect" data-guid="{{guid}}" data-direction="to"><option>Employee</option></select>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="{{guid}}-toNeoKeySelect">To Label property <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Create relationship on property" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>
+                                            <select class="form-control neoKeySelect" data-guid="{{guid}}" data-filename="{{filename}}" data-direction="to" id="{{guid}}-toNeoKeySelect"><option value=""></option></select>
+                                            <p class="help-block">Optional</p>
+                                        </div>
+
+
                                         <div class="form-group">
                                             <label for="{{guid}}-toHeaderKeySelect">Field name in file <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Field name in file" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>
                                             <select class="form-control headerKeySelect" id="{{guid}}-toHeaderKeySelect" data-filename="{{filename}}" data-guid="{{guid}}"><option value=""></option><option>EmployeeID</option></select>
@@ -510,6 +525,8 @@
             // UI handlers
             $('.labelInput').unbind().change(function(e){handleUpdateLabel(e)});
 
+            $('.labelSelect').unbind().change(function(e){updateFromLabelSelects(e.target)});
+
             $('#createRelButton').unbind().click(function() {
 
                 // TODO: This logic should be moved into relationship pane
@@ -747,12 +764,19 @@
 
                 var fromLabel = $('#' + guid +'-fromLabelSelect').val();
 
+                var fromKey = $('#' + guid + '-fromNeoKeySelect').val();
+                var toKey = $('#' + guid + '-toNeoKeySelect').val();
+
                 var fromPK = getPKForLabel(fromLabel);
                 var fromGuid = getGuidForLabel(fromLabel);
                 // TODO: fromKey will always be primaryKey (neoKey where primaryKey: true in nodeConfig)
                 // TODO: fromFileKey will be primaryKey (headerKey(?) where primaryKey: true in nodeConfig), unless overridden by key specified in fromHeaderKeySelect field
 
-                var fromKey = fromPK;
+                // Dropping assumption that fromKey will be primary key
+                if (!fromKey || fromKey === "") {
+                    fromKey = fromPK;
+                }
+
                 var specifiedFromFileKey = $('#' + guid + '-fromHeaderKeySelect').val();
                 var fromFileKey;
                 if (specifiedFromFileKey === '') {
@@ -767,7 +791,11 @@
                 // TODO: fromKey will always be primaryKey (neoKey where primaryKey: true in nodeConfig)
                 // TODO: fromFileKey will be primaryKey (headerKey(?) where primaryKey: true in nodeConfig), unless overridden by key specified in fromHeaderKeySelect field
 
-                var toKey = toPK;
+                // Dropping assumption that toKey will be primary key
+                if (!toKey || toKey === "") {
+                    toKey = toPK;
+                }
+
                 var toFileKey;
                 var specifiedToFileKey = $('#' + guid + '-toHeaderKeySelect').val();
 
@@ -977,7 +1005,7 @@
                 newRelPanel +=                  '<div class="col-xs-4">';
                 newRelPanel +=                      '<div class="form-group">';
                 newRelPanel +=                          '<label for="' + guid + '-fromLabelSelect">From</label>';
-                newRelPanel +=                          '<select class="form-control labelSelect fromLabelSelect" id="' + guid + '-fromLabelSelect" data-guid="' + guid + '">';
+                newRelPanel +=                          '<select class="form-control labelSelect fromLabelSelect" id="' + guid + '-fromLabelSelect" data-direction="from" data-guid="' + guid + '">';
 
                 var labels = getAllLabels();
 
@@ -987,6 +1015,26 @@
 
                 newRelPanel +=                          '</select>';
                 newRelPanel +=                      '</div>';
+
+                // From Label Property
+
+                newRelPanel +=                      '<div class="form-group">';
+                newRelPanel +=                          '<label for="' + filename + '-fromNeoKeySelect">From Label property <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Create relationship on property" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>';
+                newRelPanel +=                          '<select class="form-control neoKeySelect" data-guid="' + guid + '" data-filename="' + filename + '" id="' + guid + '-fromNeoKeySelect" data-direction="from">';
+
+                newRelPanel +=                      '<option></option>';
+
+                var fromKeys = neoKeysForLabel(labels[0]);
+                _.forEach(fromKeys, function(l) {
+                    newRelPanel +=                      '<option>' + l + '</option>';
+                });
+
+
+                newRelPanel +=                      '</select><p class="help-block">Optional</p>';
+                newRelPanel +=                      '</div>';
+
+
+
                 newRelPanel +=                      '<div class="form-group">';
                 newRelPanel +=                          '<label for="' + guid + '-fromHeaderKeySelect">Field name in file <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Field name in file" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>';
                 newRelPanel +=                          '<select class="form-control headerKeySelect" data-guid="' + guid +'" data-filename="' + filename + '" id="' + guid + '-fromHeaderKeySelect">';
@@ -1013,12 +1061,31 @@
                 newRelPanel +=                  '<div class="col-xs-4">';
                 newRelPanel +=                      '<div class="form-group">';
                 newRelPanel +=                          '<label for="' + guid + '-toLabelSelect">To</label>';
-                newRelPanel +=                          '<select class="form-control labelSelect toLabelSelect" id="' + guid + '-toLabelSelect" data-guid="' + guid + '">';
+                newRelPanel +=                          '<select class="form-control labelSelect toLabelSelect" id="' + guid + '-toLabelSelect" data-direction="to" data-guid="' + guid + '">';
                 _.forEach(labels, function(l) {
                     newRelPanel +=                          '<option value="' + l + '">' + l + '</option>';
                 });
                 newRelPanel +=                          '</select>';
                 newRelPanel +=                      '</div>';
+
+
+
+                // To Label property
+
+                newRelPanel +=                  '<div class="form-group">';
+                newRelPanel +=                      '<label for="' + guid + '-toNeoKeySelect">To Label property <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Create relationship on property" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>';
+                newRelPanel +=                      '<select class="form-control neoKeySelect" data-guid="' + guid + '" data-filename="' + filename + '" data-direction="to" id="' + guid + '-toNeoKeySelect">';
+
+                newRelPanel +=                          '<option></option>';
+
+                toKeys = neoKeysForLabel(labels[0]);
+                _.forEach(toKeys, function(l) {
+                    newRelPanel +=                      '<option>' + l + '</option>';
+                });
+
+                newRelPanel +=                      '</select>';
+                newRelPanel +=                  '</div>';
+
                 newRelPanel +=                  '<div class="form-group">';
                 newRelPanel +=                      '<label for="' + guid + '-toHeaderKeySelect">Field name in file <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Field name in file" data-content="Only select a value here if the field you want to map this relationship to is different from the primary key."></span></label>';
                 newRelPanel +=                      '<select class="form-control headerKeySelect" id="' + guid + '-toHeaderKeySelect" data-filename="' + filename + '" data-guid="' + guid + '">';
@@ -1071,7 +1138,10 @@
 
                 $('.tab-content-rels').append($(newRelPanel));
 
+
                 updateUIListeners();
+
+                $('#relTablist a:last').tab('show');
 
 
 
@@ -1186,7 +1256,7 @@
             });
 
             populateHeaderKeySelects();
-            //updateAllLabelSelects();
+            updateAllLabelSelects();
             //updateFromLabelSelects();
             //updateToLabelSelects();
 
@@ -1239,11 +1309,22 @@
 
         function updateFromLabelSelects(el) {
 
+            el = $(el);
+            console.log(el);
             var neoKeys = neoKeysForLabel(el.val());
             var allKeys = allKeysForLabel(el.val());
             var guid = el.data("guid");
-            var selectInputs = $('#' + guid + '-fromNeoKeySelect, #' + guid + '-fromHeaderKeySelect');
+            var selectInputs;
 
+            console.log(el.data("direction"));
+            if (el.data("direction") === 'from') {
+                selectInputs = $('#' + guid + '-fromNeoKeySelect');
+            } else {
+                selectInputs = $('#' + guid + '-toNeoKeySelect');
+            }
+
+            console.log("Keys for label: " + el.val());
+            console.log(neoKeys);
             selectInputs.prop("disabled", false).empty();
             selectInputs.append($("<option></option>")
                     .attr("value", "")
@@ -1258,11 +1339,11 @@
 
             // FIXME: this doesn't do anything now - should these fields really be actual fields for the selected file??
 
-            $.each(allKeys, function (i, key) {
-                $('#fromHeaderKeySelect').append($("<option></option>")
-                        .attr("value", key)
-                        .text(key));
-            })
+            //$.each(allKeys, function (i, key) {
+            //    $('#fromHeaderKeySelect').append($("<option></option>")
+            //            .attr("value", key)
+            //            .text(key));
+            //})
         }
 
         function updateToLabelSelects(el) {
@@ -1297,11 +1378,14 @@
         function updateAllLabelSelects() {
             // call updateFromLabelSelects with a selector for all fromLabelSelects
             // call updateToLabelSelects with a selector for all toLabelSelects
-            updateFromLabelSelects($('.labelSelect'));
-            updateToLabelSelects($('.labelSelect'));
+            updateFromLabelSelects($('.fromLabelSelect'));
+            updateFromLabelSelects($('.toLabelSelect'));
+            //updateToLabelSelects($('.labelSelect'));
 
 
         }
+
+        updateAllLabelSelects();
 
         updateUIListeners();
         populateLabelSelects();
