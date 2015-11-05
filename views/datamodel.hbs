@@ -37,7 +37,7 @@
     </div>
 
 
-    <p>Once your datamodel is fully defined clikc the "Import >>" button to move on to the data import step.</p>
+    <p>Once your datamodel is fully defined click the "Import >>" button to move on to the data import step.</p>
 </div>
 
 <div class="row">
@@ -135,12 +135,12 @@
                                     <table class="table">
                                         <tbody>
                                         <tr>
-                                            <th>Column</th>
-                                            <th>Rename</th>
-                                            <th>Skip <button type="button" class="btn btn-default btn-xs toggleSkipButton" data-guid="{{guid}}">Toggle All</button></th>
-                                            <th>PK</th>
-                                            <th>Datatype</th>
-                                            <th>Create Index</th>
+                                            <th>Column <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Column" data-content="Column name as it appears in the file header."></span></th>
+                                            <th>Rename <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Rename" data-content="You can (optionally) rename any columns as they are are to be inserted into Neo4j properties."></span></th>
+                                            <th>Skip <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Skip" data-content="Toggle to not include this field in the data model."></span><button type="button" class="btn btn-default btn-xs toggleSkipButton" data-guid="{{guid}}">Toggle All</button></th>
+                                            <th>Primary Key <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Primary Key" data-content="Each Node must have a primary key. This is a unique property that identifies the Node. "></span></th>
+                                            <th>Datatype <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Datatype" data-content="Select the datatype for this property. Default is string."></span></th>
+                                            <th>Create Index <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Create index" data-content="Toggle to create an index on this property. You should create an index if you plan to write queries that will look up Nodes by this value."></span></th>
                                             <!-- <th>FK</th> -->
                                         </tr>
                                         {{# each properties}}
