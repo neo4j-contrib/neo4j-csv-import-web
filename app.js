@@ -107,7 +107,7 @@ if (config.redis_url === '') {
     console.log("using in-memory session store");
 
 } else {
-    var store = new RedisStore({url: config.redis_url});
+    var store = new RedisStore({url: config.redis_url, ttl: config.redis_ttl});
     app.use(session({
         secret: config.session_secret,
         store: store,
