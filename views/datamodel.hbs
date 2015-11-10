@@ -13,7 +13,7 @@
 
 <div class="alert alert-info alert-dismissible text-left" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <p class="lead" data-intro="Hello start here" data-step="1">Now we're ready to configure the property graph data model.</p>
+    <p class="lead" data-intro="Now that we've selected which files we are interested in we need to configure te data model." data-step="1">Now we're ready to configure the property graph data model.</p>
 
     <div class="row">
         <div class="col-xs-9 col-md-6">
@@ -69,7 +69,7 @@
             </tfoot>
         </table>
     </div>
-    <div class="col-xs-6" id="networkViz">
+    <div class="col-xs-6" id="networkViz" data-intro="As the data model is defined this visual is updated to show the property graph data model." data-step="11">
         <!-- <img src="http://placehold.it/350x400"> -->
     </div>
 </div>
@@ -82,7 +82,7 @@
         <div class="row" style="padding:20px;">
             <div class="col-sm-10">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#nodesTab" role="tab" data-toggle="tab" data-intro="Start with Nodes" data-step="2">Nodes</a></li>
+                    <li role="presentation" class="active"><a href="#nodesTab" role="tab" data-toggle="tab" data-intro="We will start configuring the data model for Node entities." data-step="2">Nodes</a></li>
                     <li role="presentation"><a href="#relsTab" role="tab" data-toggle="tab" id="relationshipTabNav">Relationships</a></li>
                 </ul>
             </div>
@@ -92,7 +92,7 @@
                         <button type="button" class="btn btn-default">New Node</button>
                         <button type="button" class="btn btn-default">New Relationship</button>
                     </div> -->
-                    <div class="btn-group btn-group-sm" role="group">
+                    <div class="btn-group btn-group-sm" role="group" data-intro="Once you've defined the data model, click this button to move on to the next step in the import process." data-step="13">
                         <button type="submit" id="submit" class="btn btn-success">Import >></button>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
             <div role="tabpanel active" class="tab-pane active" id="nodesTab">
                 <div class="row">
                     <div class="col-sm-10">
-                        <ul class="nav nav-tabs" role="tablist" id="nodeTabList">
+                        <ul class="nav nav-tabs" role="tablist" id="nodeTabList" data-intro="You can select and drill down into the configuration for each node in these tabs." data-step="3">
                             {{# each config.nodes}}
                                 <li role="presentation" class="nodeTabListItem"><a href="#{{guid}}" aria-controls="{{guid}}" role="tab" data-toggle="tab" id="{{guid}}-tabAnchor">{{filename}}</a></li>
                             {{/each}}
@@ -111,7 +111,7 @@
                         </ul>
                     </div>
                     <div class="col-sm-2">
-                        <button class="btn btn-default btn-xs" id="newNodeButton" data-toggle="modal" data-target="#newNodeModal">New Node</button>
+                        <button class="btn btn-default btn-xs" id="newNodeButton" data-toggle="modal" data-target="#newNodeModal" data-intro="To add nodes not already specified click this button." data-step="12">New Node</button>
                     </div>
                 </div>
 
@@ -127,7 +127,7 @@
                                             <div class="form-group" style="padding:20px;">
                                                 <label for="{{guid}}-labelInput" class="col-sm-4 control-label">Label <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Node Label" data-content="Node types are identified by a Node Label that descrives the Node type. For example, Person or Business. Each Node must have a Label in this data model."></span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control labelInput" name="{{guid}}-labelInput" data-id="{{guid}}" id="{{guid}}-labelInput" placeholder="Node" data-intro="Pick a label for each node." data-step="3" required>
+                                                    <input type="text" class="form-control labelInput" name="{{guid}}-labelInput" data-id="{{guid}}" id="{{guid}}-labelInput" placeholder="Node" data-intro="Node types are identified by a Node Label that descrives the Node type. For example, Person or Business. Each Node must have a Label in this data model." data-step="4" required>
                                                 </div>
                                             </div>
                                             <div class="form-group" style="padding:20px;">
@@ -142,12 +142,12 @@
                                     <table class="table">
                                         <tbody>
                                         <tr>
-                                            <th>Column <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Column" data-content="Column name as it appears in the file header."></span></th>
-                                            <th>Rename <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Rename" data-content="You can (optionally) rename any columns as they are are to be inserted into Neo4j properties."></span></th>
+                                            <th data-intro="Column names as they appear in the header of the csv file. These will be used as property keys in the data model." data-step="5">Column <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Column" data-content="Column name as it appears in the file header."></span></th>
+                                            <th data-intro="The column can be (optionally) renamed. The value specified here will be used as the property key." data-step="6">Rename <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Rename" data-content="You can (optionally) rename any columns as they are are to be inserted into Neo4j properties."></span></th>
                                             <th>Skip <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Skip" data-content="Toggle to not include this field in the data model."></span><button type="button" class="btn btn-default btn-xs toggleSkipButton" data-guid="{{guid}}">Toggle All</button></th>
-                                            <th>Primary Key <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Primary Key" data-content="Each Node must have a primary key. This is a unique property that identifies the Node. "></span></th>
-                                            <th>Datatype <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Datatype" data-content="Select the datatype for this property. Default is string."></span></th>
-                                            <th>Create Index <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Create index" data-content="Toggle to create an index on this property. You should create an index if you plan to write queries that will look up Nodes by this value."></span></th>
+                                            <th data-intro="Each Node must have a single primary key. This is a unique value that identifies the node. Select which column holds the primary key for this Node." data-step="7">Primary Key <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Primary Key" data-content="Each Node must have a primary key. This is a unique property that identifies the Node. "></span></th>
+                                            <th data-intro="Choose the datatype for this property. String by default." data-step="8">Datatype <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Datatype" data-content="Select the datatype for this property. Default is string."></span></th>
+                                            <th data-intro="Toggle to create an index on this property. You should create an index if you plan to write queries that will look up Nodes by this value." data-step="9">Create Index <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Create index" data-content="Toggle to create an index on this property. You should create an index if you plan to write queries that will look up Nodes by this value."></span></th>
                                             <!-- <th>FK</th> -->
                                         </tr>
                                         {{# each properties}}
