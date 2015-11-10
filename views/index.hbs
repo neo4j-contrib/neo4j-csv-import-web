@@ -43,13 +43,32 @@
     </div>
 </div>
 
+<div class="modal fade" id="warningModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Privacy note</h4>
+            </div>
+            <div class="modal-body">
+                <p><strong>NOTE: </strong> By choosing continue the files you have just selected will be uploaded to a remote server and will be made available for download over the internet, although using an obfuscated url. If you prefer you can avoid this and run the app locally.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" id="uploadContinueButton" class="btn btn-primary" data-dismiss="modal">Upload data and continue</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <script>
     var fileData = {},
-        fileNames = [];
+        fileNames = [],
+        fileEvent;
 
-    function handleFileSelect(evt) {
-        var file = evt.target.files[0];
+    function handleFileSelect() {
+        var file = fileEvent.target.files[0];
 
         $('#spinnerDiv').append($('<div class="spinner-loader">Loading…</div>'));
 
@@ -88,6 +107,15 @@
     }
 
     $(document).ready(function(){
-        $("#csv-file").change(handleFileSelect);
+        $("#csv-file").change(function(e) {
+            $('#warningModal').modal('show');
+            fileEvent = e;
+        });
+
+        $('#uploadContinueButton').click(function(e) {
+            e.preventDefault();
+            handleFileSelect();
+
+        })
     })
 </script></div></div>
