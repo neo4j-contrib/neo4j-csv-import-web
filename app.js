@@ -23,6 +23,11 @@ hbs.registerHelper("stripstr", function(str) {
   return str.split('.').join("");
 });
 
+hbs.registerHelper("stripfilename", function(str) {
+    str = str.replace(/([^a-z0-9]+)/gi, "");
+    return str.replace(/csv$/gi, "");
+});
+
 // build HTML for /preview/:filename
 hbs.registerHelper("previewTable", function(fields, data) {
   var rows = "";

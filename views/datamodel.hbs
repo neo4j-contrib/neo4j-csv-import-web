@@ -127,7 +127,7 @@
                                             <div class="form-group" style="padding:20px;">
                                                 <label for="{{guid}}-labelInput" class="col-sm-4 control-label">Label <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Node Label" data-content="Node types are identified by a Node Label that descrives the Node type. For example, Person or Business. Each Node must have a Label in this data model."></span></label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" class="form-control labelInput" name="{{guid}}-labelInput" data-id="{{guid}}" id="{{guid}}-labelInput" placeholder="Node" data-intro="Node types are identified by a Node Label that descrives the Node type. For example, Person or Business. Each Node must have a Label in this data model." data-step="4" required>
+                                                    <input type="text" class="form-control labelInput" name="{{guid}}-labelInput" data-id="{{guid}}" id="{{guid}}-labelInput" placeholder="Node" data-intro="Node types are identified by a Node Label that descrives the Node type. For example, Person or Business. Each Node must have a Label in this data model." data-step="4" value="{{stripfilename filename}}"required>
                                                 </div>
                                             </div>
                                             <div class="form-group" style="padding:20px;">
@@ -1423,6 +1423,7 @@
         //DatamodelViz.initNetworkViz();
         drawRelationshipTable();  // FIXME: only skeleton of relationship object at load. dont' add row if missing properties
 
+        $('.labelInput').trigger("change");
 
     });
 </script>
