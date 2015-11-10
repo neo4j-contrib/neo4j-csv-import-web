@@ -535,6 +535,20 @@
                 e.preventDefault();
                 var intro = introJs();
 
+                intro.onbeforechange(function(target) {
+                    /* if the tab menu item is highlighted */
+                    if($(target).data("toggle") == "tab") {
+                        $(target).trigger("click");
+                    }
+
+                    /* if anything in a tab is highlighted change to that tab */
+                    var tab = $(target).closest('.tab-pane');
+                    var id = tab.prop("id");
+                    if(id) {
+                        $('a[href="#' + id + '"]').trigger("click");
+                    }
+                });
+
                 intro.start();
 
                 console.log("guide me!");
