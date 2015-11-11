@@ -6,14 +6,22 @@
 </div>
 
 <div class="row">
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#loadcsv" aria-controls="loadcsv" role="tab" data-toggle="tab">LOAD CSV Cypher</a></li>
-        <li role="presentation"><a href="#connect" aria-controls="connect" role="tab" data-toggle="tab">Connect to Existing Neo4j Instance</a></li>
-        {{# if cypher }}
-            <li role="presentation"><a href="#cypher" aria-controls="cypher" role="tab" data-toggle="tab">Single Statement Cypher</a></li>
-        {{/if}}
+    <div class="col-xs-8">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#loadcsv" aria-controls="loadcsv" role="tab" data-toggle="tab">LOAD CSV Cypher</a></li>
+            <li role="presentation"><a href="#connect" aria-controls="connect" role="tab" data-toggle="tab">Connect to Existing Neo4j Instance</a></li>
+            {{# if cypher }}
+                <li role="presentation"><a href="#cypher" aria-controls="cypher" role="tab" data-toggle="tab">Single Statement Cypher</a></li>
+            {{/if}}
 
-    </ul>
+        </ul>
+    </div>
+    <div class="col-xs-4">
+        <button id="purgeButton" class="btn btn-danger">Purge my data now</button>
+    </div>
+</div>
+<div class="row">
+
 
     <div class="tab-content">
 
@@ -79,6 +87,40 @@
 
 
 </div>
+
+<div class="modal fade" id="confirmModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Are you sure?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete all data uploaded to the server?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmButton" class="btn btn-danger">Delete my data</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="purgeModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Data purged</h4>
+            </div>
+            <div class="modal-body">
+                <p>Your data has been removed. Thanks for importing your data. If you have any feedback please email <a href="mailto:william.lyon@neotechnology.com">william.lyon@neotechnology.com</a></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="doneButton" class="btn btn-primary">OK</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script>
     $(function(){
@@ -193,6 +235,29 @@
         // event handler for import button
         // ajax call to trigger connection to Neo4j and begin import
 
+        $('#purgeButton').click(function(e){
+            e.preventDefault();
+            $('#confirmModal').modal('show');
+        });
+
+        $('#confirmButton').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "/purge",
+                success: function(d) {
+                    $('#purgeModal').modal('show');
+                },
+                error: function(xhr, statusText, errorThrown) {
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+
+        $('#doneButton').click(function(e){
+            e.preventDefault();
+            window.location.href="/";
+        })
     });
 </script>
 

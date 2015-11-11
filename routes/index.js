@@ -277,4 +277,10 @@ router.get('/preview/:filename', function(req, res, next) {
   res.render('preview', previewData)
 });
 
+router.post('/purge', function(req, res, next) {
+  req.session.destroy(function(err){
+    res.send('OK');
+  })
+});
+
 module.exports = router;
