@@ -1,6 +1,6 @@
 <style>
     .popover{
-        max-width: 100%;
+        max-width: 1000%;
     }
 </style>
 
@@ -34,7 +34,7 @@
 <table class="table">
     <tbody>
         <tr>
-            <th data-intro="To see what data each file contains, hover over the preview file link here. This can be helpful to determine if a file contains a node or relationship (or multiple nodes and relationships). " data-step="4">Preview <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Preview" data-content="As a convenience you can preview the first few rows of each file."></span></th>
+            <th data-intro="To see what data each file contains, click on the preview file link here. This can be helpful to determine if a file contains a node or relationship (or multiple nodes and relationships). " data-step="4">Preview <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Preview" data-content="As a convenience you can preview the first few rows of each file."></span></th>
             <th data-intro="If you uploaded a file that you don't want to include in the data model, toggle this checkbox to exclude the file." data-step="3">Import <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Select files for import" data-content="Toggle to exclude files from being imported"></span></th>
             <th data-intro="The first step of defining your property graph data model is to identify each file that contains 'Nodes'. A Node is an entity in the data model. Each node can have data associated with it, and usually represents some real world object. For example, a Person node, or a Business node or an Event node. Nodes are connected by relationships."  data-step="1" data-position="left">Node <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Node" data-content="Each CSV file represents a Node, Relationship or both. Nodes are entities in the data model."></span></th>
             <th data-intro="A relationship connects two nodes. For each file select this option if your CSV file references two Node entities. An example would be a join table exported from a relational database." data-step="2" data-position="left">Relationship <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="popover" title="Relationship" data-content="Relationships connect entities in the data model. Choose this if this file represents a 'join table'."></span></th>
@@ -80,7 +80,7 @@
         $('[data-poload]').each(function(i,e){
             var el = $(e);
             $.get(el.data("poload"), function(d) {
-                el.popover({content: d, html: true, trigger: 'hover', placement: 'auto left'});
+                el.popover({content: d, html: true, trigger: 'click', placement: 'auto left'});
             })
         });
 

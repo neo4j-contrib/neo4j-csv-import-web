@@ -5,7 +5,7 @@
         border: 1px solid lightgray;
     }
     .popover {
-        max-width: 100%;
+        max-width: 1000%;
     }
 </style>
 <div class="container">
@@ -1271,7 +1271,7 @@
             $('[data-poload]').each(function(i,e){
                 var el = $(e);
                 $.get(el.data("poload"), function(d) {
-                    el.popover({content: d, html: true, trigger: 'hover', container: 'body'});
+                    el.popover({content: d, html: true, trigger: 'click', container: 'body'});
                 })
             });
 
