@@ -283,4 +283,8 @@ router.post('/purge', function(req, res, next) {
   })
 });
 
+router.get('/terms', function(req, res, next) {
+  res.render('terms', {title: "Privay Policy"})
+});
+
 module.exports = router;
