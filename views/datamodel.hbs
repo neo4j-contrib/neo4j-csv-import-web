@@ -117,8 +117,8 @@
         <div class="row" style="padding:20px;">
             <div class="col-sm-10">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#nodesTab" id="nodesTabNav" role="tab" data-toggle="tab" data-intro="We will start configuring the data model for Node entities." data-step="2">Nodes</a></li>
-                    <li role="presentation"><a href="#relsTab" role="tab" data-toggle="tab" id="relationshipTabNav" class="hidden">Relationships</a></li>
+                    <li role="presentation" class="active"><a href="#nodesTab" id="nodesTabNav" role="tab" data-toggle="tab" data-intro="We will start configuring the data model for Node entities." data-step="2" class="hidePopover">Nodes</a></li>
+                    <li role="presentation"><a href="#relsTab" role="tab" data-toggle="tab" id="relationshipTabNav" class="hidden hidePopover">Relationships</a></li>
                 </ul>
             </div>
             <div class="col-sm-2">
@@ -141,7 +141,7 @@
                     <div class="col-sm-10">
                         <ul class="nav nav-tabs" role="tablist" id="nodeTabList" data-intro="You can select and drill down into the configuration for each node in these tabs." data-step="3">
                             {{# each config.nodes}}
-                                <li role="presentation" class="nodeTabListItem"><a href="#{{guid}}" aria-controls="{{guid}}" role="tab" data-toggle="tab" id="{{guid}}-tabAnchor">{{filename}}</a></li>
+                                <li role="presentation" class="nodeTabListItem"><a href="#{{guid}}" class="hidePopover" aria-controls="{{guid}}" role="tab" data-toggle="tab" id="{{guid}}-tabAnchor">{{filename}}</a></li>
                             {{/each}}
 
                         </ul>
@@ -1267,6 +1267,11 @@
             });
 
             $('[data-content]').popover({container:'body'});
+
+            // when showing a new tab, all currently shown popovers must be hidden
+            $('.hidePopover').click(function(e){
+                $('[data-content').popover('hide');
+            });
 
             $('[data-poload]').each(function(i,e){
                 var el = $(e);
