@@ -115,22 +115,29 @@
 
         <!-- Nav tabs -->
         <div class="row" style="padding:20px;">
-            <div class="col-sm-10">
+            <div class="col-sm-8">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#nodesTab" id="nodesTabNav" role="tab" data-toggle="tab" data-intro="We will start configuring the data model for Node entities." data-step="2" class="hidePopover">Nodes</a></li>
                     <li role="presentation"><a href="#relsTab" role="tab" data-toggle="tab" id="relationshipTabNav" class="hidden hidePopover">Relationships</a></li>
                 </ul>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-4">
+
                 <div class="btn-toolbar" role="toolbar" aria-label="fileActionButtons">
                     <!-- <div class="btn-group btn-group-sm" role="group" aria-label="newActionButtons">
                         <button type="button" class="btn btn-default">New Node</button>
                         <button type="button" class="btn btn-default">New Relationship</button>
                     </div> -->
-                    <div class="btn-group btn-group-sm" role="group" data-intro="Once you've defined the data model, click this button to move on to the next step in the import process." data-step="13">
-                        <button type="submit" id="submit" class="btn btn-success hidden" data-step="25" data-intro="Once you've configured the relationships for your datamodel move on to the import step by clicking this button.">Next: Import</button>
-                        <button class="btn btn-success" id="relConfigButton">Next: Configure Relationships</button>
+                    <div class="btn-group btn-group-sm" role="group">
+
+                        <button class="btn btn-default hidden" id="nodeConfigButton">Back: Configure Nodes</button>
+                        <button class="btn btn-success" id="relConfigButton" data-intro="Once you've defined the data model, click this button to move on to the next step in the import process." data-step="13">Next: Configure Relationships</button>
+
                     </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="submit" id="submit" class="btn btn-success hidden" data-step="25" data-intro="Once you've configured the relationships for your datamodel move on to the import step by clicking this button.">Next: Import</button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -781,9 +788,26 @@
 
                     $('#helperAlertNodes').addClass("hidden");
                     $('#helperAlertRels').removeClass("hidden");
+
+                    $("#nodeConfigButton").removeClass("hidden");
                     updateUIListeners();
 
                 }
+
+            });
+
+            $('#nodeConfigButton').unbind().click(function(e){
+                e.preventDefault();
+
+                $('#nodesTabNav').trigger('click');
+                $(this).addClass('hidden');
+                $('#relConfigButton').removeClass("hidden");
+
+                $('#helperAlertNodes').removeClass("hidden");
+                $("#helperAlertRels").addClass("hidden");
+                $('#submit').addClass('hidden');
+
+
 
             });
 
