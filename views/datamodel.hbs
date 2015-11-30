@@ -1294,7 +1294,8 @@
 
             // when showing a new tab, all currently shown popovers must be hidden
             $('.hidePopover').click(function(e){
-                $('[data-content').popover('hide');
+                $('[data-content]').popover('hide');
+                $('[data-poload]').popover('hide');
             });
 
             $('[data-poload]').each(function(i,e){
