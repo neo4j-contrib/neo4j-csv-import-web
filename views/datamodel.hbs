@@ -199,7 +199,7 @@
                                                 <td><label><input class="renameLabel" data-guid="{{../guid}}" data-field="{{headerKey}}" type="text" name="{{../guid}}-{{headerKey}}-rename"></label></td>
                                                 <td><label><input class="skipCheckBox" data-guid="{{../guid}}" data-field="{{headerKey}}" type="checkbox" name="{{../guid}}-{{headerKey}}-skip"></label></td>
                                                 <td><label><input type="checkbox" data-guid="{{../guid}}" data-field="{{headerKey}}" class="pkcheckbox" name="{{../guid}}-{{headerKey}}-pk"></label></td>
-                                                <td><label><select data-guid="{{../guid}}" data-field="{{headerKey}}" class="datatypeselect">
+                                                <td><label><select data-guid="{{../guid}}" data-field="{{headerKey}}"  data-filename="{{../filename}}" class="datatypeselect">
                                                     <option value="string">string</option>
                                                     <option value="integer">integer</option>
                                                     <option value="float">float</option>
@@ -529,7 +529,12 @@
 <script>
     var configData = JSON.parse('{{{stringify this.config}}}');
     var fileFields = JSON.parse('{{{stringify this.fileFields}}}');
+    var fieldDatatypes = JSON.parse('{{{stringify this.fieldDatatypes}}}');
     console.log(configData);
+    console.log("File fields");
+    console.log(fileFields);
+    console.log("fieldDatatypes");
+    console.log(fieldDatatypes);
 
     $(function() {
 
@@ -1092,7 +1097,7 @@
                     row += '<td>' + '<label><input class="renameLabel" data-guid="' + guid + '" data-field="' + field + '" type="text" name="' + guid + '-' + field + '-rename"></label> </td>';
                     row += '<td>' + '<label><input class="skipCheckBox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" name="' + guid + '-' + field + '-skip"></label> </td>';
                     row += '<td>' + '<label><input class="pkcheckbox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" name="' + guid + '-' + field + '-pk"></label> </td>';
-                    row += '<td><label><select data-guid="' + guid + '" data-field="' + field + '" class="datatypeselect"><option value="string">string</option><option value="integer">integer</option><option value="float">float</option></select> </label></td>';
+                    row += '<td><label><select data-guid="' + guid + '" data-field="' + field + '" data-filename="' + filename + '" class="datatypeselect"><option value="string">string</option><option value="integer">integer</option><option value="float">float</option></select> </label></td>';
 
                     row += '<td>' + '<label><input class="indexCheckbox" data-guid="' + guid + '" data-field="' + field + '" type="checkbox" id="' + guid + '-' + field + '-index" name="' + guid + '-' + field + '-index"></label> </td>';
                     //row += '<td><button type="button" class="btn btn-sm">---</button>';
@@ -1566,6 +1571,21 @@
         drawRelationshipTable();  // FIXME: only skeleton of relationship object at load. dont' add row if missing properties
 
         $('.labelInput').trigger("change");
+
+        function updateDatatypeValues() {
+            $('.datatypeselect').each(function() {
+                var el = $(this);
+                var filename = el.data("filename");
+                var field = el.data("field");
+
+                var value = fieldDatatypes[filename][field];
+                if (value) {
+                    el.val(value);
+                }
+            })
+        }
+
+        updateDatatypeValues();
 
     });
 </script>

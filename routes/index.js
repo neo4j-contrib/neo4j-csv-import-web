@@ -114,6 +114,7 @@ router.get('/datamodel', function(req, res, next) {
   var fileData = req.session.fileData,
       configData = req.session.configData;
 
+  //console.dir(fileData);
   // don't send full file data - only need fields for each file (outside of configDat)
 
   var fileFields = {};
@@ -128,6 +129,34 @@ router.get('/datamodel', function(req, res, next) {
 
   });
 
+
+  // get datatypes for each field
+
+  var fieldDatatypes = {};
+
+  _.forEach(fileData, function(v,k) {
+
+
+    if ('data' in fileData[k]) {
+
+      var row = fileData[k]['data'][0];
+      var dataTypes = {};
+      _.forEach(row, function (rowv, rowk) {
+        if (typeof rowv === "number" && Number.isInteger(rowv)) {
+          dataTypes[rowk] = "integer"; // how to handle float vs int? using only JS Number?
+        } else if (typeof rowv === "number") {
+          dataTypes[rowk] = "float";
+        } else if (typeof rowv === "string") {
+          dataTypes[rowk] = "string";
+        } else {
+          dataTypes[rowk] = "string";
+        }
+      });
+      fieldDatatypes[k] = dataTypes;
+    }
+
+  });
+
   //console.log(JSON.stringify(fileFields, null, 4));
 
   var context = {};
@@ -135,6 +164,7 @@ router.get('/datamodel', function(req, res, next) {
   context['files'] = fileData.files;
   context['config'] = configData;
   context['fileFields'] = fileFields;
+  context['fieldDatatypes'] = fieldDatatypes;
   res.render('datamodel', context);
 });
 
