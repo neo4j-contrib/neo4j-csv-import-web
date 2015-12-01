@@ -274,7 +274,7 @@
                                     <div class="col-xs-4">
                                         <div class="form-group" data-step="20" data-intro="Each relationship must have a name.">
                                             <label for="{{guid}}-nameInput">Relationship name</label>
-                                            <input type="text" class="form-control" id="{{guid}}-nameInput" data-guid="{{guid}}" placeholder="ACTED_IN">
+                                            <input type="text" class="form-control relNameInput" id="{{guid}}-nameInput" data-guid="{{guid}}" placeholder="ACTED_IN">
                                         </div>
 
                                     </div>
@@ -540,6 +540,40 @@
         $('.rel-tab-pane').first().addClass("active");
 
         DatamodelViz.init();
+
+        function isModelValid() {
+            // check for PK
+            var numNodes = configData.nodes.length;
+            var numRels = configData.relationships.length;
+
+            var numPKs = $('.pkcheckbox:checked').length;
+            var numLabels = $(".labelInput").filter(function(){ return this.value != "";}).length;
+            var numRelNames = $(".relNameInput").filter(function(){ return this.value != "";}).length;
+
+            var relFlag = false;
+
+            _.each(configData.relationships, function(rel){
+                if (!rel.hasOwnProperty("name")) {
+                    // missing relationship name
+                    relFlag = true;
+                }
+            });
+
+
+            if (numNodes != numPKs) {
+                alert("Please select a Primary Key for each Node.");
+                return false;
+            } else if (numNodes != numLabels) {
+                alert("Please enter a Label for each Node.");
+                return false;
+            } else if (numRels != numRelNames || relFlag){
+                alert("Missing relationship name. Please make sure all relationships have defined names");
+                return false;
+            }
+
+            return true;
+
+        }
 
 
         function handleUpdateLabel(e) {
@@ -815,18 +849,7 @@
                 // TODO: validate configuration object at this point
                 e.preventDefault();
 
-                // check for PK
-                var numNodes = configData.nodes.length;
-
-                var numPKs = $('.pkcheckbox:checked').length;
-                var numLabels = $(".labelInput").filter(function(){ return this.value != "";}).length;
-                console.log("numLabels " + numLabels);
-
-                if (numNodes != numPKs) {
-                    alert("Please select a Primary Key for each Node.");
-                } else if (numNodes != numLabels) {
-                    alert("Please enter a Label for each Node.");
-                } else {
+                if (isModelValid()) {
 
 
                     $.ajax({
@@ -1199,7 +1222,7 @@
                 newRelPanel +=                  '<div class="col-xs-4">';
                 newRelPanel +=                      '<div class="form-group">';
                 newRelPanel +=                          '<label for="' + guid +'-nameInput">Relationship name</label>';
-                newRelPanel +=                          '<input type="text" class="form-control" id="' + guid +'-nameInput" data-guid="' + guid +'" placeholder="ACTED_IN">';
+                newRelPanel +=                          '<input type="text" class="form-control relNameInput" id="' + guid +'-nameInput" data-guid="' + guid +'" placeholder="ACTED_IN">';
                 newRelPanel +=                      '</div>';
                 newRelPanel +=                  '</div>';
                 newRelPanel +=                  '<div class="col-xs-4">';
