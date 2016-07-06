@@ -9,7 +9,7 @@ A web tool to make importing csv files into Neo4j super easy.
 
 `neo4j-csv-import-web` is running on Heroku at [https://neo4j-csv-import.herokuapp.com/](https://neo4j-csv-import.herokuapp.com/)
 
-![](https://dl.dropboxusercontent.com/u/67572426/csvimport.gif)
+![](img/csvimport.gif)
 
 ## Dependencies
 
